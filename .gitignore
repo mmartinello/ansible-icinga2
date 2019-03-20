@@ -1,0 +1,11 @@
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Joe backup files
+*~
+
+# Python
+__pycache__/

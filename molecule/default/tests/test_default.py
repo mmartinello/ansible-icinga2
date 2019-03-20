@@ -12,3 +12,9 @@ def test_hosts_file(host):
     assert f.exists
     assert f.user == 'root'
     assert f.group == 'root'
+
+
+def test_icinga2_enabled_and_running(host):
+    service = host.service('icinga2')
+    assert service.is_enabled
+    assert service.is_running

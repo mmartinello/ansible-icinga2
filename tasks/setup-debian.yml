@@ -1,0 +1,23 @@
+---
+- name: APT Transport HTTPS
+  apt:
+    name: apt-transport-https
+    state: present
+
+- name: Icinga Repository Key
+  apt_key: url=https://packages.icinga.com/icinga.key state=present
+
+- name: Icinga Repository
+  apt_repository:
+    repo: deb http://packages.icinga.com/{{ ansible_distribution | lower }} icinga-{{ ansible_distribution_release | lower}} main
+    state: present
+    filename: icinga
+
+- name: Install Icinga 2
+  package: name=icinga2 state=present
+
+- name: Install Nagios Plugins
+  apt:
+    name: "{{ debian_monitoring_plugins }}"
+    state: present
+    update_cache: true

@@ -1,2 +1,10 @@
 ---
-# defaults file for ansible-icinga2
+debian_monitoring_plugins:
+  - monitoring-plugins-basic
+  - monitoring-plugins-common
+  - monitoring-plugins-standard
+  - nagios-plugins-basic
+  - nagios-plugins-contrib
+  - libmonitoring-plugin-perl
+
+icinga2_enabled_on_boot: true

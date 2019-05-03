@@ -1,10 +1,21 @@
 ---
-debian_monitoring_plugins:
-  - monitoring-plugins-basic
-  - monitoring-plugins-common
-  - monitoring-plugins-standard
-  - nagios-plugins-basic
-  - nagios-plugins-contrib
-  - libmonitoring-plugin-perl
+# Icinga 2 Service
+icinga2_enable_on_boot: true
 
-icinga2_enabled_on_boot: true
+# Icinga 2 IDO
+icinga2_ido_enable: true
+
+# Default admin auth data from ~/.my.cnf file (see Ansible mysql_db_module)
+icinga2_ido_db_admin_user: null
+icinga2_ido_db_admin_password: null
+
+icinga2_ido_db_create: true
+icinga2_ido_db_user_create: true
+icinga2_ido_db_purge: false
+icinga2_ido_db_name: 'icinga2'
+icinga2_ido_db_host: 'localhost'
+icinga2_ido_db_user: 'icinga2'
+icinga2_ido_db_password: "{{ ansible_machine_id ~ '_icinga2' | hash('sha1') | truncate(24, True, '') }}"
+icinga2_ido_db_user_host: 'localhost'
+icinga2_ido_db_schema_file_path: '/usr/share/icinga2-ido-mysql/schema/mysql.sql'
+icinga2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,CREATE VIEW,INDEX,EXECUTE'

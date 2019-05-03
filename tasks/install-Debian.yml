@@ -1,0 +1,97 @@
+---
+- name: Install required packages
+  apt:
+    name:
+      - apt-transport-https
+    state: present
+  tags: install-icinga2
+
+- name: Add Icinga Repository Key
+  apt_key:
+    url: https://packages.icinga.com/icinga.key
+    state: present
+  tags: install-icinga2
+
+- name: Add Icinga APT Repository
+  apt_repository:
+    repo: deb http://packages.icinga.com/{{ ansible_distribution | lower }} icinga-{{ ansible_distribution_release }} main
+    state: present
+    filename: icinga
+  tags: install-icinga2
+
+- name: Install Icinga 2
+  package: name=icinga2 state=present
+  notify: Restart Icinga2
+  tags: install-icinga2
+
+- name: Install Monitoring Plugins
+  apt:
+    name:
+      - monitoring-plugins-basic
+      - monitoring-plugins-common
+      - monitoring-plugins-standard
+      - nagios-plugins-basic
+      - nagios-plugins-contrib
+      - libmonitoring-plugin-perl
+    state: present
+    update_cache: yes
+  tags: [install-icinga2, install-plugins]
+
+- name: Install Icinga 2 IDO Module
+  apt: name=icinga2-ido-mysql state=present
+  when: icinga2_ido_enable == true
+  tags: [install-icinga2, install-icinga2-ido]
+
+- name: Create Icinga 2 IDO Database
+  mysql_db:
+    name: "{{ icinga2_ido_db_name }}"
+    login_host: "{{ icinga2_ido_db_host }}"
+    login_user: "{{ icinga2_ido_db_admin_user }}"
+    login_password: "{{ icinga2_ido_db_admin_password }}"
+    collation: utf8_general_ci
+    encoding: utf8
+    state: present
+  when: icinga2_ido_enable == true and icinga2_ido_db_create == true
+  tags: [install-icinga2, install-icinga2-ido]
+
+- name: Create Icinga 2 IDO User
+  mysql_user:
+    login_host: "{{ icinga2_ido_db_host }}"
+    login_user: "{{ icinga2_ido_db_admin_user }}"
+    login_password: "{{ icinga2_ido_db_admin_password }}"
+    name: "{{ icinga2_ido_db_user }}"
+    password: "{{ icinga2_ido_db_password }}"
+    host: "{{ icinga2_ido_db_user_host }}"
+    priv: "{{ icinga2_ido_db_name }}.*:{{ icinga2_ido_db_user_privileges }}"
+    state: present
+  when: icinga2_ido_enable == true and icinga2_ido_db_create == true and icinga2_ido_db_user_create == true
+  tags: [install-icinga2, install-icinga2-ido]
+
+- name: Drop tables from Icinga2 IDO Database
+  shell: '{{ _mysql_cmd }} -Nse "SHOW TABLES;" {{ icinga2_ido_db_name }} | while read table; do {{ _mysql_cmd }} -e "DROP TABLE $table" {{ icinga2_ido_db_name }}; done'
+  when: icinga2_ido_enable == true and icinga2_ido_db_create == true and (icinga2_ido_db_purge == true or icinga2_ido_db_purge|bool == true)
+  tags: [install-icinga2, install-icinga2-ido]
+
+- name: Get tables in Icinga2 IDO Database
+  shell: '{{ _mysql_cmd }} -Nse "SHOW TABLES;" {{ icinga2_ido_db_name }}'
+  register: icinga2_ido_db_tables
+  when: icinga2_ido_enable == true and icinga2_ido_db_create == true
+  tags: [install-icinga2, install-icinga2-ido]
+
+- name: Check if Icinga2 IDO Database Schema file exists
+  stat:
+    path: "{{ icinga2_ido_db_schema_file_path}}"
+  register: icinga2_ido_db_schema_file
+  when: icinga2_ido_enable == true and icinga2_ido_db_create == true
+  tags: [install-icinga2, install-icinga2-ido]
+  
+- name: Import Icinga2 IDO Database Schema
+  mysql_db:
+    name: "{{ icinga2_ido_db_name }}"
+    login_host: "{{ icinga2_ido_db_host }}"
+    login_user: "{{ icinga2_ido_db_user }}"
+    login_password: "{{ icinga2_ido_db_password }}"
+    state: import
+    target: "{{ icinga2_ido_db_schema_file_path }}"
+  when: icinga2_ido_enable == true and icinga2_ido_db_create == true and icinga2_ido_db_schema_file is defined and icinga2_ido_db_schema_file.stat is defined and icinga2_ido_db_schema_file.stat.exists and icinga2_ido_db_tables.stdout_lines == []
+  tags: [install-icinga2, install-icinga2-ido]

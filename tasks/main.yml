@@ -1,10 +1,12 @@
 ---
-- name: Include OS Specific setup tasks.
-  include: setup-debian.yml
-  when: ansible_os_family == "Debian"
+- include_tasks: vars.yml
+  tags: ['always']
+
+- include_tasks: install.yml
+  tags: ['install-icinga2']
 
 - name: Ensure Icinga is started and enabled on boot.
   service:
     name: icinga2
     state: started
-    enabled: "{{ icinga2_enabled_on_boot }}"
+    enabled: "{{ icinga2_enable_on_boot }}"

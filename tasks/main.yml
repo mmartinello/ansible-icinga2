@@ -3,10 +3,30 @@
   tags: ['always']
 
 - include_tasks: install.yml
-  tags: ['install-icinga2']
+  tags: ['install-icinga2-stack', 'install-icinga2']
+
+- include_tasks: ido-install.yml
+  tags: ['install-icinga2-stack', 'install-icinga2-ido']
+
+- include_tasks: configure.yml
+  tags: ['install-icinga2-stack']
+
+- include_tasks: icingaweb2-install.yml
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- include_tasks: icingaweb2-configure.yml
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Newly generate token for Icinga Web 2
+  debug:
+    msg: "{{ icingacli_setup_token.stdout_lines }}"
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
 
 - name: Ensure Icinga is started and enabled on boot.
   service:
     name: icinga2
     state: started
     enabled: "{{ icinga2_enable_on_boot }}"
+  tags: ['install-icinga2-stack', 'install-icinga2']

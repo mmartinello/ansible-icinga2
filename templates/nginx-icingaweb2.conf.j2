@@ -1,0 +1,61 @@
+{% if icingaweb2_http_enable == True %}
+server {
+        listen {{ icingaweb2_http_port }};
+        server_name {{ icingaweb2_http_servername }};
+
+{% if icingaweb2_https_force == True %}
+        return 301 https://$http_host$request_uri;
+{% else %}
+        root {{ icingaweb2_root_path }};
+        index index.php;
+        disable_symlinks off;
+
+        location ~ \.php$ {
+                 try_files $uri /index.php =404;
+                 fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                 fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+                 fastcgi_index index.php;
+                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                 include fastcgi_params;
+        }
+
+        access_log {{ icingaweb2_access_log_path }};
+        error_log {{ icingaweb2_error_log_path }} debug;
+        {% endif %}
+}
+{% endif %}
+
+{% if icingaweb2_https_enable == True %}
+server {
+        listen {{ icingaweb2_https_port }};
+        server_name {{ icingaweb2_http_servername }};
+        root {{ icingaweb2_root_path }};
+        index index.php;
+
+        disable_symlinks off;
+
+        ssl on;
+        ssl_certificate {{ icingaweb2_ssl_certificate_path }};
+        ssl_certificate_key {{ icingaweb2_ssl_certificate_key_path }};
+        ssl_session_timeout 5m;
+        ssl_protocols SSLv3 TLSv1;
+        ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv3:+EXP;
+        ssl_prefer_server_ciphers on;
+
+        location / {
+                try_files $uri $uri/ =404 /index.php?$query_string;
+        }
+
+        location ~ \.php$ {
+                 try_files $uri /index.php =404;
+                 fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                 fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+                 fastcgi_index index.php;
+                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                 include fastcgi_params;
+        }
+
+        access_log {{ icingaweb2_access_log_path }};
+        error_log {{ icingaweb2_error_log_path }} debug;
+}
+{% endif %}

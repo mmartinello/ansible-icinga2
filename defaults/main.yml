@@ -1,14 +1,23 @@
 ---
 # Icinga 2 Service
 icinga2_enable_on_boot: true
+icinga2_api_accept_config: false
+icinga2_api_accept_commands: false
+icinga2_api_ticket_salt: 'Change me'
+
+# Monitoring plugins
+debian_monitoring_plugins:
+  - monitoring-plugins-basic
+  - monitoring-plugins-common
+  - monitoring-plugins-standard
+  - nagios-plugins-basic
+  - nagios-plugins-contrib
+  - libmonitoring-plugin-perl
 
 # Icinga 2 IDO
 icinga2_ido_enable: true
-
-# Default admin auth data from ~/.my.cnf file (see Ansible mysql_db_module)
 icinga2_ido_db_admin_user: null
 icinga2_ido_db_admin_password: null
-
 icinga2_ido_db_create: true
 icinga2_ido_db_user_create: true
 icinga2_ido_db_purge: false
@@ -19,3 +28,36 @@ icinga2_ido_db_password: "{{ ansible_machine_id ~ '_icinga2' | hash('sha1') | tr
 icinga2_ido_db_user_host: 'localhost'
 icinga2_ido_db_schema_file_path: '/usr/share/icinga2-ido-mysql/schema/mysql.sql'
 icinga2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,CREATE VIEW,INDEX,EXECUTE'
+
+# Icinga Web 2
+icingaweb2_install: true
+
+# Icinga Web 2 HTTP Server
+icingaweb2_http_server: 'nginx'
+icingaweb2_http_conf_file_path: '/etc/nginx/conf.d/icingaweb2.conf'
+icingaweb2_http_enable: true
+icingaweb2_http_port: 80
+icingaweb2_http_servername: localhost
+icingaweb2_root_path: '/usr/share/icingaweb2/public'
+icingaweb2_access_log_path: '/var/log/nginx/icingaweb2.log'
+icingaweb2_error_log_path: '/var/log/nginx/icingaweb2-error.log'
+icingaweb2_ssl_certificate_path: null
+icingaweb2_https_enable: false
+icingaweb2_https_force: true
+icingaweb2_https_port: 443
+icingaweb2_php_ini_file_path: '/etc/php/7.0/fpm/php.ini'
+icingaweb2_timezone: 'Europe/Rome'
+
+# Icinga Web 2 Database
+icingaweb2_db_create: true
+icingaweb2_db_user_create: true
+icingaweb2_db_admin_user: null
+icingaweb2_db_admin_password: null
+icingaweb2_db_name: 'icingaweb2'
+icingaweb2_db_host: 'localhost'
+icingaweb2_db_user: 'icingaweb2'
+icingaweb2_db_password: "{{ ansible_machine_id ~ '_icingaweb2' | hash('sha1') | truncate(24, True, '') }}"
+icingaweb2_db_user_host: 'localhost'
+icingaweb2_db_user_privileges: 'ALL'
+icingaweb2_ido_db_user_host: 'localhost'
+icingaweb2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,CREATE VIEW,INDEX,EXECUTE'

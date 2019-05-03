@@ -1,0 +1,53 @@
+---
+- name: Configure Nginx for Icinga Web 2
+  template:
+    src: nginx-icingaweb2.conf.j2
+    dest: "{{ icingaweb2_http_conf_file_path }}"
+  when: icingaweb2_http_server|lower == 'nginx'
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+  debugger: on_skipped
+  notify: Restart Nginx
+
+- name: Create Icinga Web 2 Database
+  mysql_db:
+    name: "{{ icingaweb2_db_name }}"
+    login_host: "{{ icingaweb2_db_host }}"
+    login_user: "{{ icingaweb2_db_admin_user }}"
+    login_password: "{{ icingaweb2_db_admin_password }}"
+    collation: utf8_general_ci
+    encoding: utf8
+    state: present
+  when: icingaweb2_install == true and icingaweb2_db_create == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+# FIXME: if icingaweb2_db_host != icinga2_ido_db_host use two tasks with two different privs!
+- name: Create Icinga Web 2 Database User
+  mysql_user:
+    login_host: "{{ icingaweb2_db_host }}"
+    login_user: "{{ icingaweb2_db_admin_user }}"
+    login_password: "{{ icingaweb2_db_admin_password }}"
+    name: "{{ icingaweb2_db_user }}"
+    password: "{{ icingaweb2_db_password }}"
+    host: "{{ icingaweb2_db_user_host }}"
+    priv: "{{ icingaweb2_db_name }}.*:{{ icingaweb2_db_user_privileges }}/{{ icinga2_ido_db_name }}.*:{{ icingaweb2_ido_db_user_privileges }}"
+    state: present
+  when: >
+    icingaweb2_install == true
+    and icingaweb2_db_create == true
+    and icingaweb2_db_user_create == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Generate a new Icinga setup token
+  command: icingacli setup token create
+  register: icingacli_setup_token
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Set PHP Date Timezone
+  lineinfile:
+    dest: "{{ icingaweb2_php_ini_file_path }}"
+    regexp: "date.timezone ="
+    line: "date.timezone = {{ icingaweb2_timezone }}"
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+  notify: "Restart PHP-FPM"

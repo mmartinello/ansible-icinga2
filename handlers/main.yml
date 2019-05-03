@@ -8,3 +8,23 @@
   service:
     name: icinga2
     state: reloaded
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
+
+- name: Reload Nginx
+  service:
+    name: nginx
+    state: reloaded
+
+- name: Restart PHP-FPM
+  service:
+    name: php7.0-fpm
+    state: restarted
+
+- name: Reload Nginx
+  service:
+    name: php7.0-fpm
+    state: reloaded

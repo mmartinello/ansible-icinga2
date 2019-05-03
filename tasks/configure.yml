@@ -1,0 +1,18 @@
+---
+- name: Check if Icinga 2 API are already activated
+  stat:
+    path: /etc/icinga2/features-enabled/api.conf
+  register: icinga2_api_conf_file
+  tags: ['install-icinga2-stack']
+
+- name: Setup Icinga 2 API
+  command: icinga2 api setup
+  when: icinga2_api_conf_file.stat.exists == false
+  tags: ['install-icinga2-stack']
+
+- name: Configure Icinga2 API
+  template:
+    src: templates/api.conf.j2
+    dest: /etc/icinga2/features-available/api.conf
+  notify: Restart Icinga2
+  tags: ['install-icinga2-stack']

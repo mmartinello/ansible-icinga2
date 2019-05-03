@@ -1,0 +1,9 @@
+---
+- name: Install Icinga Web 2
+  apt:
+    name:
+      - icingaweb2
+      - icingacli
+    state: present
+  when: icingaweb2_install == true
+  tags: ['install-icingaweb2']

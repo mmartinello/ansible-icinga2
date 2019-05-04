@@ -1,5 +1,8 @@
 ---
-# Icinga 2 Service
+#########################################################################
+# Icinga 2
+
+# Main service
 icinga2_enable_on_boot: true
 icinga2_api_accept_config: false
 icinga2_api_accept_commands: false
@@ -14,7 +17,7 @@ debian_monitoring_plugins:
   - nagios-plugins-contrib
   - libmonitoring-plugin-perl
 
-# Icinga 2 IDO
+# IDO
 icinga2_ido_enable: true
 icinga2_ido_db_admin_user: null
 icinga2_ido_db_admin_password: null
@@ -29,7 +32,13 @@ icinga2_ido_db_user_host: 'localhost'
 icinga2_ido_db_schema_file_path: '/usr/share/icinga2-ido-mysql/schema/mysql.sql'
 icinga2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,CREATE VIEW,INDEX,EXECUTE'
 
+# Distributed installation
+icinga2_master_setup: false
+icinga2_node_cn: {{ ansible_fqdn }}
+
+#########################################################################
 # Icinga Web 2
+
 icingaweb2_install: true
 
 # Icinga Web 2 HTTP Server

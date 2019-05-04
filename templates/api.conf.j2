@@ -6,7 +6,7 @@ object ApiListener "api" {
   accept_config = {{ icinga2_api_accept_config | lower }}
   accept_commands = {{ icinga2_api_accept_commands | lower }}
 
-  ticket_salt = "{{ icinga2_api_ticket_salt }}"
+  ticket_salt = TicketSalt
 }
 
 {% if icinga2_api_users is defined %}

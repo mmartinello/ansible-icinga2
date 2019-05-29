@@ -1,0 +1,14 @@
+object Endpoint NodeName {
+}
+
+object Zone ZoneName {
+        endpoints = [ NodeName ]
+}
+
+object Zone "global-templates" {
+        global = true
+}
+
+object Zone "director-global" {
+        global = true
+}

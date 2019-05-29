@@ -1,0 +1,11 @@
+/**
+ * The ApiUser objects are used for authentication against the API.
+ */
+{% if icinga2_api_users is defined %}
+{% for user in icinga2_api_users %}
+object ApiUser "{{ user.username }}" {
+    password = "{{ user.password }}"
+    permissions = [ {{ user.permissions }} ]
+}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,28 @@
+---
+- name: Set Node Name
+  lineinfile:
+    dest: /etc/icinga2/constants.conf
+    regexp: "const NodeName ="
+    line: "const NodeName = {{ icinga2_node_cn }}"
+  when: icinga2_master_setup == true
+  tags: ['install-icinga2-stack']
+
+- name: Copy zones configuration file
+  template:
+    src: templates/zones.conf.j2
+    dest: /etc/icinga2/zones.conf
+  when: icinga2_master_setup == true
+  tags: ['install-icinga2-stack']
+
+- name: Check if CA certificate is already present
+  stat:
+    path: /var/lib/icinga2/certs/ca.crt
+  register: icinga2_ca_file
+  when: icinga2_master_setup == true
+  tags: ['install-icinga2-stack']
+
+- name: Create a new CA if not already exists
+  command: icinga2 pki new-ca
+  when: icinga2_master_setup == true and icinga2_ca_file.stat.exists == false
+  tags: ['install-icinga2-stack']
+  

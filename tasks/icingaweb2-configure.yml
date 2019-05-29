@@ -37,6 +37,11 @@
     and icingaweb2_db_user_create == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
+- name: Enable icingacli setup module
+  command: icingacli module enable setup
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
 - name: Generate a new Icinga setup token
   command: icingacli setup token create
   register: icingacli_setup_token

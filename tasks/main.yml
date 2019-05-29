@@ -11,6 +11,17 @@
 - include_tasks: configure.yml
   tags: ['install-icinga2-stack']
 
+- include_tasks: node-configure.yml
+  when: icinga2_master_setup == true
+  tags: ['install-icinga2-stack']
+
+- name: Restart Icinga 2
+  service:
+    name: icinga2
+    status: restarted
+  when: icinga2_master_setup == true
+  tags: ['install-icinga2-stack']
+
 - include_tasks: icingaweb2-install.yml
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
@@ -18,7 +29,7 @@
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
-- name: Newly generate token for Icinga Web 2
+- name: Icingaweb2 installed, please complete configuration on web setup
   debug:
     msg: "{{ icingacli_setup_token.stdout_lines }}"
   when: icingaweb2_install == true

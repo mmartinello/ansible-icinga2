@@ -69,10 +69,3 @@
   command: icinga2 feature enable ido-mysql
   when: icinga2_ido_enable == true
   tags: ['install-icinga2-stack', 'install-icinga2-ido']
-
-- name: Restart Icinga 2
-  service:
-    name: icinga2
-    state: restarted
-  when: icinga2_ido_enable == true
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']

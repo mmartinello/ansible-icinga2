@@ -34,7 +34,7 @@ icinga2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,C
 
 # Distributed installation
 icinga2_master_setup: false
-icinga2_node_cn: {{ ansible_fqdn }}
+icinga2_node_cn: "{{ ansible_fqdn }}"
 
 #########################################################################
 # Icinga Web 2

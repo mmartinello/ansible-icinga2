@@ -1,0 +1,13 @@
+---
+- name: Ensure custom conf.d directory is present
+  file:
+    path: "{{ icinga2_etc_root_dir }}/{{icinga2_etc_confd_dir}}"
+    state: directory
+  tags: ['config']
+
+- name: Ensure config files are recursively included from conf.d dir
+  lineinfile:
+    path: "{{ icinga2_config_file }}"
+    line: "include_recursive \"{{ icinga2_etc_confd_dir }}\""
+    state: present
+  tags: ['config']

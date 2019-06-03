@@ -35,6 +35,9 @@
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
+- include_tasks: config.yml
+  tags: ['install-icinga2-stack', 'config']
+
 - include_tasks: plugins.yml
   when: plugins_install == true
   tags: ['plugins']

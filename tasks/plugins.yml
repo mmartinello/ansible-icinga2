@@ -1,0 +1,42 @@
+---
+- name: Install Rsync
+  package: name=rsync state=present
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: get the username running the deploy
+  local_action: shell whoami
+  register: remote_username
+  vars:
+    ansible_become: no
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: Allow RSYNC for new super user without SUDO password
+  blockinfile:
+    path: /etc/sudoers.d/zzz-ansible-temp
+    state: present
+    create: yes
+    marker: "\n# ----- {mark} ANSIBLE MANAGED BLOCK -----\n"
+    block: |
+
+      {{ remote_username.stdout }} ALL=NOPASSWD: /usr/bin/rsync
+      Defaults:{{ remote_username.stdout }}        !requiretty
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: Install Icinga Custom Plugins
+  synchronize:
+    src: "{{ plugins_src_dir }}/"
+    dest: "{{ plugins_dest_dir }}"
+    delete: yes
+    recursive: yes
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: Disallow RSYNC for new super user without SUDO password
+  file:
+    path: /etc/sudoers.d/zzz-ansible-temp
+    state: absent
+  when: plugins_install == true
+  tags: ['plugins']

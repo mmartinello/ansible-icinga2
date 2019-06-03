@@ -70,3 +70,10 @@ icingaweb2_db_user_host: 'localhost'
 icingaweb2_db_user_privileges: 'ALL'
 icingaweb2_ido_db_user_host: 'localhost'
 icingaweb2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,CREATE VIEW,INDEX,EXECUTE'
+
+#########################################################################
+# Plugins
+
+plugins_install: true
+plugins_src_dir: 'files/icinga-plugins'
+plugins_dest_dir: '/opt/icinga-plugins'

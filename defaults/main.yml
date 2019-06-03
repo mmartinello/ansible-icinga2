@@ -8,6 +8,10 @@ icinga2_api_accept_config: false
 icinga2_api_accept_commands: false
 icinga2_api_ticket_salt: 'Change me'
 
+# Configuration
+icinga2_etc_root_dir: '/etc/icinga2'
+icinga2_etc_confd_dir: '/etc/icinga2/conf.d'
+
 # Monitoring plugins
 debian_monitoring_plugins:
   - monitoring-plugins-basic
@@ -77,3 +81,4 @@ icingaweb2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DRO
 plugins_install: true
 plugins_src_dir: 'files/icinga-plugins'
 plugins_dest_dir: '/opt/icinga-plugins'
+plugins_custom_dir_var_name: 'CustomPluginsDir'

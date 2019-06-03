@@ -25,7 +25,7 @@
   when: plugins_install == true
   tags: ['plugins']
 
-- name: Install Icinga Custom Plugins
+- name: Deploy Icinga Custom Plugins
   synchronize:
     src: "{{ plugins_src_dir }}/"
     dest: "{{ plugins_dest_dir }}"
@@ -38,5 +38,12 @@
   file:
     path: /etc/sudoers.d/zzz-ansible-temp
     state: absent
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: Deploy Icinga Custom Plugins configuration file
+  template:
+    src: files/icinga-custom-plugins/custom-command-plugins.conf.j2
+    dest: "{{ icinga2_etc_confd_dir }}/custom-command-plugins.conf"
   when: plugins_install == true
   tags: ['plugins']

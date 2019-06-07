@@ -27,7 +27,7 @@
 
 - name: Deploy Icinga Custom Plugins
   synchronize:
-    src: "{{ plugins_src_dir }}/"
+    src: "files/icinga2-custom-plugins/"
     dest: "{{ plugins_dest_dir }}"
     delete: yes
     recursive: yes
@@ -50,7 +50,7 @@
 
 - name: Deploy Icinga Custom Plugins configuration file
   template:
-    src: files/icinga-custom-plugins/custom-command-plugins.conf.j2
+    src: templates/custom-command-plugins.conf.j2
     dest: "{{ icinga2_etc_root_dir }}/{{icinga2_etc_confd_dir}}/custom-command-plugins.conf"
   when: plugins_install == true
   tags: ['plugins']

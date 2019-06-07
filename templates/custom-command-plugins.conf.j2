@@ -1,0 +1,688 @@
+#object CheckCommand "mem" {
+#        command = [ {{ plugins_custom_dir_var_name }} + "/check_mem.pl" ]
+#
+#        arguments = {
+#                "-u" = {
+#                        set_if = "$mem_used$"
+#                        description = "Check USED memory"
+#                }
+#                "-f" = {
+#                        set_if = "$mem_free$"
+#                        description = "Check FREE memory"
+#                }
+#                "-C" = {
+#                        set_if = "$mem_cache$"
+#                        description = "Count OS caches as FREE memory"
+#                }
+#                "-w" = {
+#                        value = "$mem_warning$"
+#                        description = "Percent free/used when to warn"
+#                }
+#                "-c" = {
+#                        value = "$mem_critical$"
+#                        description = "Percent free/used when critical"
+#                }
+#        }
+#
+#        vars.mem_used = false
+#        vars.mem_free = true
+#        vars.mem_cache = true
+#        vars.mem_warning = 20
+#        vars.mem_critical = 10
+#}
+
+object CheckCommand "check_rdp" {
+	import "ipv4-or-ipv6"
+
+	command = [ {{ plugins_custom_dir_var_name }} + "/check_x224" ]
+
+	arguments = {
+		"-H" = {
+			value = "$rdp_address$"
+			description = "Address of the RDP Server"
+		}
+	}
+
+	vars.rdp_address = "$check_address$"
+}
+
+object CheckCommand "check_files" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_files.pl" ]
+
+        arguments = {
+                "-F" = {
+                        value = "$files$"
+                        description = "Which files to check"
+                        required = true
+                }
+                "-D" = {
+                        value = "$directory$"
+                        description = "Directory name in which to check files"
+                }
+                "-T" = {
+                        value = "$filetype$"
+                        description = "Allows to specify if we should count only files or only directories"
+                }
+                "-r" = {
+                        set_if = "$recurse$"
+                        description = "When present ls will do 'ls -r' and recursive check in subdirectories"
+                }
+                "-l" = {
+                        set_if = "$lsfiles$"
+                        description = "When present this adds specified file spec to ls"
+                }
+                "-f" = {
+                        set_if = "$perfparse$"
+                        description = "Give number of files and file oldest file age in perfout"
+                }
+                "-w" = {
+                        value = "$warn$"
+                        description = "Warning level(s) for number of files"
+                }
+                "-c" = {
+                        value = "$crit$"
+                        description = "Critical level(s) for number of files"
+                }
+                "-a" = {
+                        value = "$files_age$"
+                }
+                "-s" = {
+                        value = "$files_size$"
+                }
+                "-S" = {
+                        value = "$files_sumsize$"
+                }
+        }
+}
+
+object CheckCommand "check_galera_cluster" {
+	import "ipv4-or-ipv6"
+
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_galera_cluster" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$galera_host$"
+                        description = "MySQL host. Default is localhost."
+                }
+                "-P" = {
+                        value = "$galera_port$"
+                        description = "MySQL port. Default is 3306."
+                }
+                "-u" = {
+                        value = "$galera_user$"
+                        description = "MySQL user."
+			required = true
+                }
+                "-p" = {
+                        value = "$galera_password$"
+                        description = "MySQL password."
+                }
+                "-w" = {
+                        value = "$galera_warning$"
+                        description = "Sets minimum number of nodes in the cluster when WARNING is raised. (default is same as critical)."
+                }
+                "-c" = {
+                        value = "$galera_critical$"
+                        description = "Sets minimum number of nodes in the cluster when CRITICAL is raised. (default is 2)."
+                }
+                "-f" = {
+                        value = "$galera_float$"
+                        description = "Sets critical value of wsrep_flow_control_paused (default is 0.1)."
+                }
+                "-0" = {
+                        value = "$galera_not_primary$"
+                        description = "Rise CRITICAL if the node is not primary."
+                }
+	}
+
+	vars.galera_host = "$check_address$"
+}
+
+object CheckCommand "check_megaraid_sas" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_megaraid_sas" ]
+
+        arguments = {
+                "-b" = {
+                        set_if = "$megaraid_check_battery$"
+                        description = "check Battery Back Up status"
+                }
+                "-B" = {
+                        set_if = "$megaraid_battery_backup_nowarn$"
+                        description = "battery back up charging state is not a warning"
+                }
+                "-c" = {
+                        set_if = "$megaraid_check_current_cache_policy_is_default$"
+                        description = "check that current cache policy matches default policy"
+                }
+                "-m" = {
+                        value = "$megaraid_ignore_media$"
+                        description = "is the number of media errors to ignore"
+                }
+                "--consistency_check_is_ok" = {
+                        set_if = "$megaraid_consistency_check_is_ok$"
+                        description = "consistency checks are OK"
+                }
+                "--missing_is_ok" = {
+                        set_if = "$megaraid_missing_is_ok$"
+                        description = "test returns OK if MegaCli is not present"
+                }
+                "--no_battery_is_ok" = {
+                        set_if = "$megaraid_no_battery_is_ok$"
+                        description = "lack of a battery is not a problem"
+                }
+                "-p" = {
+                        value = "$megaraid_ignored_predictive$"
+                        description = "is the predictive error count to ignore"
+                }
+                "-o" = {
+                        value = "$megaraid_ignored_other$"
+                        description = "is the number of other disk errors to ignore"
+                }
+                "-s" = {
+                        value = "$megaraid_hotspares$"
+                        description = "is how many hotspares are attached to the controller"
+                }
+                "--sudo" = {
+                        set_if = "$megaraid_sudo$"
+                        description = "should sudo be enabled"
+                }
+        }
+
+	vars.megaraid_sudo = true
+}
+
+object CheckCommand "check_zfs" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_zfs" ]
+}
+
+object CheckCommand "check_smart" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_smart.zcu.pl" ]
+
+        arguments = {
+                "-d" = {
+                        value = "$smart_device$"
+                        description = "a device to be SMART monitored, eg. /dev/sda"
+                }
+                "-i" = {
+                        value = "$smart_interface$"
+                        description = "ata, sat, scsi, megaraid, depending upon the device's interface type"
+                }
+                "-r" = {
+                        value = "$smart_realloc$"
+                        description = "minimum of accepted reallocated sectors (actual value: 0)"
+                }
+                "-p" = {
+                        value = "$smart_pending$"
+                        description = "minimum of accepted pending sectors (actual value: 0)"
+                }
+                "-c" = {
+                        set_if = "$smart_checksum_disable$"
+                        description = "disable checksum log structure (default: enable)"
+                }
+                "-l" = {
+                        set_if = "$smart_log_disable$"
+                        description = "disable check of SMART logs (default: enable)"
+                }
+                "-f" = {
+                        set_if = "$smart_failure_disable$"
+                        description = "disable warning when disk may be close to failure"
+                }
+                "--debug" = {
+                        set_if = "$smart_debug$"
+                        description = "show debugging information"
+                }
+	}
+}
+
+object CheckCommand "check_mssql_health" {
+	import "ipv4-or-ipv6"
+
+	command = [ {{ plugins_custom_dir_var_name }} + "/check_mssql_health" ]
+
+	arguments = {
+                "--hostname" = {
+                        value = "$check_mssql_health_hostname$"
+                        description = "The database server"
+                }
+                "--username" = {
+                        value = "$check_mssql_health_username$"
+                        description = "The database user"
+                }
+                "--password" = {
+                        value = "$check_mssql_health_password$"
+                        description = "The database password"
+                }
+                "--port" = {
+                        value = "$check_mssql_health_port$"
+                        description = "The port, where the server listens (Default: 1433)"
+                }
+                "--server" = {
+                        value = "$check_mssql_health_server$"
+                        description = "An alternative to hostname+port. <server> will be looked up in the file freetds.conf."
+                }
+                "--mode" = {
+                        value = "$check_mssql_health_mode$"
+                        description = "With the mode-parameter you tell the plugin what you want it to do."
+                }
+                "--name" = {
+                        value = "$check_mssql_health_name$"
+                        description = "Several checks can be limited to a single object (e.g. a specific database). It is also used for mode=sql."
+                }
+                "--name2" = {
+                        value = "$check_mssql_health_name2$"
+                        description = "If you use –mode=sql, the SQL-statement will be shown in the plugin output and the performance data (which looks ugly). The parameter name2 can be used to provide a used-defined string."
+                }
+                "--warning" = {
+                        value = "$check_mssql_health_warning$"
+                        description = "Values outside this range result in a WARNING."
+                }
+                "--critical" = {
+                        value = "$check_mssql_health_critical$"
+                        description = "Values outside this range result in a CRITICAL."
+                }
+                "--environment" = {
+                        value = "$check_mssql_health_environment$"
+                        description = "It is possible to set environment variables at runtime with htis parameter. It can be used multiple times."
+                }
+                "--method" = {
+                        value = "$check_mssql_health_method$"
+                        description = "With this parameter you tell the plugin, which connection method it should use. Known values are: dbi for the perl module DBD::Sybase (default) and sqlrelay for the SQLRelay proxy."
+                }
+                "--units" = {
+                        value = "$check_mssql_health_units$"
+                        description = "This parameter adds units to the performance, when using mode=sql (%|KB|MB|GB)"
+                }
+                "--dbthresholds" = {
+                        value = "$check_mssql_health_$dbthresholds"
+                        description = "With this parameter thresholds are read from the database table check_mssql_health_thresholds"
+                }
+		"--commit" = {
+			set_if = "$check_mssql_health_commit$"
+			description = "Forces auto-commit on"
+		}
+	}
+
+	vars.check_mssql_health_server = "$check_address$"	
+        vars.check_mssql_health_commit = true
+}
+
+object CheckCommand "check_backuppc" {
+        command = [ "sudo", "-u", "backuppc", {{ plugins_custom_dir_var_name }} + "/check_backuppc/check_backuppc" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$check_backuppc_hostname$"
+                        description = "only check the specified host"
+                }
+                "-x" = {
+                        value = "$check_backuppc_exclude$"
+                        description = "do not check the specified host"
+                }
+                "-o" = {
+                        value = "$check_backuppc_owner$"
+                        description = "do only hosts of specified user"
+                }
+                "-f" = {
+                        set_if = "$check_backuppc_force$"
+                        description = "force check even if host is disabled"
+                }
+                "-w" = {
+                        value = "$check_backuppc_warning$"
+                        description = "days old of last good backup to cause a warning"
+                }
+                "-c" = {
+                        set_if = "$check_backuppc_critical$"
+                        description = "days old of last good backup to cause a warning"
+                }
+                "-v" = {
+                        set_if = "$check_backuppc_verbose$"
+                        description = "increase verbosity"
+                }
+        }
+}
+
+object CheckCommand "check_mysql_query" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/advanced-nagios-plugins" + "/check_mysql_query.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$check_mysql_query_host$"
+                        description = "MySQL host ($MYSQL_HOST, $HOST)"
+                }
+                "-P" = {
+                        value = "$check_mysql_query_port$"
+                        description = "MySQL port ($MYSQL_PORT, $PORT, default: 3306)"
+                }
+                "-u" = {
+                        value = "$check_mysql_query_user$"
+                        description = "MySQL user ($MYSQL_USERNAME, $MYSQL_USER, $USERNAME, $USER)"
+                }
+                "-p" = {
+                        value = "$check_mysql_query_password$"
+                        description = "MySQL password ($MYSQL_PASSWORD, $PASSWORD)"
+                }
+                "-d" = {
+                        value = "$check_mysql_query_database$"
+                        description = "MySQL database ($MYSQL_DATABASE)"
+                }
+                "-s" = {
+                        value = "$check_mysql_query_socket$"
+                        description = "MySQL socket file through which to connect (defaults: /var/lib/mysql/mysql.sock, /tmp/mysql.sock)"
+                }
+                "-q" = {
+                        value = "$check_mysql_query_query$"
+                        description = "MySQL query to execute"
+                }
+                "-f" = {
+                        value = "$check_mysql_query_field$"
+                        description = "Field name / number to check the results of (defaults to '1' for the first field)"
+                }
+                "-e" = {
+                        set_if = "$check_mysql_query_epoch$"
+                        description = "Subtract result from current time in epoch format from result (useful for timestamp based comparisons)"
+                }
+                "-m" = {
+                        value = "$check_mysql_query_message$"
+                        description = "Message to output after result. Can take a printf string with a single substitution (defaults to 'query returned')"
+                }
+                "-n" = {
+                        set_if = "$check_mysql_query_message_prepend$"
+                        description = "Display message before rather than after result (prepend)"
+                }
+                "-o" = {
+                        value = "$check_mysql_query_output$"
+                        description = "Exact output to expect"
+                }
+                "-r" = {
+                        value = "$check_mysql_query_regex$"
+                        description = "Regex to match the result against"
+                }
+                "-w" = {
+                        value = "$check_mysql_query_warning$"
+                        description = "Warning  threshold or ran:ge (inclusive)"
+                }
+                "-c" = {
+                        value = "$check_mysql_query_critical$"
+                        description = "Critical threshold or ran:ge (inclusive)"
+                }
+                "-g" = {
+                        set_if = "$check_mysql_query_graph$"
+                        description = "Perfdata output for graphing"
+                }
+                "-l" = {
+                        value = "$check_mysql_query_label$"
+                        description = "Perfdata label. If not specified uses field name or Undefined if field name doesn't match a known regex of chars"
+                }
+                "-U" = {
+                        value = "$check_mysql_query_units$"
+                        description = "Units of measurement for graphing output (%/s/ms/us/B/KB/MB/TB/c)"
+                }
+                "-T" = {
+                        set_if = "$check_mysql_query_short$"
+                        description = "Shorten output, do not output message just result"
+                }
+                "-Q" = {
+                        value = "$check_mysql_query_no_querytime$"
+                        description = "Do not output the mysql query time"
+                }
+                "-t" = {
+                        value = "$check_mysql_query_timeout$"
+                        description = "Timeout in secs ($TIMEOUT, default: 10)"
+                }
+	}
+}
+
+object CheckCommand "check_kopano" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_kopano.sh" ]
+
+        arguments = {
+                "--param" = {
+                        value = "$check_kopano_param$"
+                        description = "Set what to query: queueln, queueage, threads, threads_idle. Default is threads_idle"
+                }
+                "-w" = {
+                        value = "$check_kopano_warning$"
+                        description = "Exit with WARNING status if above INTEGER"
+                }
+                "-c" = {
+                        value = "$check_kopano_critical$"
+                        description = "Exit with CRITICAL status if above INTEGER"
+                }
+	}
+}
+
+object CheckCommand "check_mountpoints" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_mountpoints.sh" + "$check_mountpoints_mountpoint$" ]
+
+        arguments = {
+                "-m" = {
+                        value = "$check_mountpoints_mtab$"
+                        description = "Use this mtab instead (default: /proc/mounts)"
+                }
+                "-f" = {
+                        value = "$check_mountpoints_fstab$"
+                        description = "Use this fstab instead (default: /etc/fstab)"
+                }
+                "-N" = {
+                        value = "$check_mountpoints_fs_field$"
+                        description = "FS Field number in fstab (default: 3)"
+                }
+                "-M" = {
+                        value = "$check_mountpoints_mount_field$"
+                        description = "Mount Field number in fstab (default: 2)"
+                }
+                "-O" = {
+                        value = "$check_mountpoints_option_field$"
+                        description = "Option Field number in fstab (default: 4)"
+                }
+                "-T" = {
+                        value = "$check_mountpoints_nfs_timeout$"
+                        description = "Responsetime at which an NFS is declared as staled (default: 3)"
+                }
+                "-L" = {
+                        set_if = "$check_mountpoints_softlinks$"
+                        description = "Allow softlinks to be accepted instead of mount points"
+                }
+                "-i" = {
+                        set_if = "$check_mountpoints_ignore_fstab$"
+                        description = "Ignore fstab. Do not fail just because mount is not in fstab. (default: unset)"
+                }
+                "-a" = {
+                        set_if = "$check_mountpoints_autoselect_mounts$"
+                        description = "Autoselect mounts from fstab (default: unset)"
+                }
+                "-A" = {
+                        set_if = "$check_mountpoints_fstab_autoselect$"
+                        description = "Autoselect from fstab. Return OK if no mounts found. (default: unset)"
+                }
+                "-E" = {
+                        value = "$check_mountpoints_exclude$"
+                        description = "Use with -a or -A to exclude a path from fstab. Use backslash+pipe between paths for multiple. (default: unset)"
+                }
+                "-o" = {
+                        set_if = "$check_mountpoints_ignore_noauto$"
+                        description = "When autoselecting mounts from fstab, ignore mounts having noauto flag. (default: unset)"
+                }
+                "-w" = {
+                        set_if = "$check_mountpoints_writetest$"
+                        description = "Writetest. Touch file $mountpoint/.mount_test_from_$(hostname) (default: unset)"
+                }
+                "-e" = {
+                        value = "$check_mountpoints_extra$"
+                        description = "Extra arguments for df (default: unset)"
+                }
+                "-" = {
+                        value = "$check_mountpoints_mountpoint$"
+                        description = "list of mountpoints to check. Ignored when -a is given"
+                }
+        }
+
+	vars.check_mountpoints_fstab_autoselect = true
+	vars.check_mountpoints_ignore_noauto = true
+}
+
+object CheckCommand "check_mysql_slavestatus" {
+	import "ipv4-or-ipv6"
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_mysql_slavestatus.sh" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$check_mysql_slavestatus_hostname$"
+                        description = "Hostname or IP of slave server"
+                }
+                "-P" = {
+                        value = "$check_mysql_slavestatus_port$"
+                        description = "Port of slave server"
+                }
+                "-u" = {
+                        value = "$check_mysql_slavestatus_username$"
+                        description = "Username of DB-user"
+                }
+                "-p" = {
+                        value = "$check_mysql_slavestatus_password$"
+                        description = "Password of DB-user"
+                }
+                "-s" = {
+                        value = "$check_mysql_slavestatus_connection_name$"
+                        description = "Connection name (optional, with multi-source replication)"
+                }
+                "-w" = {
+                        value = "$check_mysql_slavestatus_warning$"
+                        description = "Delay in seconds for Warning status (optional)"
+                }
+                "-c" = {
+                        value = "$check_mysql_slavestatus_critical$"
+                        description = "Delay in seconds for Critical status (optional)"
+                }
+        }
+
+        vars.check_mysql_slavestatus_hostname = "$check_address$"
+        vars.check_mysql_slavestatus_port = 3306
+}
+
+object CheckCommand "check_kernel" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_kernel.sh" ]
+}
+
+#object CheckCommand "yum" {
+#        command = [ {{ plugins_custom_dir_var_name }} + "/check_yum.py" ]
+#
+#        arguments = {
+#                "-A" = {
+#                        value = "$yum_all_updates$"
+#                        description = "Does not distinguish between security and non-security updates, but returns critical for any available update."
+#                }
+#                "-W" = {
+#                        value = "$yum_warn_on_any_update$"
+#                        description = "Warns if there are any (non-security) package updates available."
+#                }
+#                "-C" = {
+#                        value = "$yum_cache_only$"
+#                        description = "Run entirely from cache and do not update the cache when running yum."
+#                }
+#                "-c" = {
+#                        value = "$yum_config$"
+#                        description = "Run with custom repository config"
+#                }
+#                "-N" = {
+#                        value = "$yum_no_warn_on_lock$"
+#                        description = "Return OK instead of WARNING when yum is locked and fails to check for updates due to another instance running"
+#                }
+#                "-e" = {
+#                        value = "$yum_enablerepo$"
+#                        description = "Explicitly enables a reposity when calling yum. Can take a comma separated list of repositories"
+#                }
+#                "-d" = {
+#                        value = "$yum_disablerepo$"
+#                        description = "Explicitly disables a repository when calling yum. Can take a comma separated list of repositories"
+#                }
+#                "--disableplugin" = {
+#                        value = "$yum_disableplugin$"
+#                        description = "Explicitly disables a plugin when calling yum. Can take a comma separated list of plugins"
+#                }
+#                "-t" = {
+#                        value = "$yum_timeout$"
+#                        description = "Sets a timeout in seconds after which the plugin will exit (defaults to 30 seconds)"
+#                }
+#                "-" = {
+#                        value = "$yum_verbose$"
+#                        description = "Verbose mode"
+#                }
+#        }
+#}
+
+object CheckCommand "icecast2" {
+        import "ipv4-or-ipv6"
+
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_ice2" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$icecast2_host$"
+                        description = "remote host"
+                }
+                "-m" = {
+                        value = "$icecast2_mount$"
+                        description = "remote mount"
+                }
+                "-p" = {
+                        value = "$icecast2_port$"
+                        description = "remote port"
+                }
+                "-v" = {
+                        set_if = "$icecast2_verbose$"
+                        description = "verbose mode"
+                }
+                "-w" = {
+                        set_if = "$icecast2_warning$"
+                        description = "treat ICY issues as warnings"
+                }
+        }
+
+        vars.icecast2_hostname = "$check_address$" 
+        vars.icecast2_port = 80
+}
+
+object CheckCommand "dns-server" {
+        import "ipv4-or-ipv6"
+
+        command = [ PluginDir + "/check_dns" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$dns_lookup$"
+                        description = "The name or address you want to query."
+                }
+                "-s" = {
+                        value = "$dns_server$"
+                        description = "Optional DNS server you want to use for the lookup."
+                }
+	}
+
+	vars.dns_lookup = "www.google.com"
+        vars.dns_server = "$check_address$"
+}
+
+object CheckCommand "udp_port" {
+        import "ipv4-or-ipv6"
+
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_udp_port" ]
+
+	arguments = {
+		"-H" = {
+			value = "$udp_host$"
+			description = "Name or IP of remote host"
+		}
+		"-p" = {
+			value = "$udp_port$"
+			description = "UDP port number to check"
+		}
+		"-s" = {
+			value = "$udp_service$"
+			description = "Name of the service that should be listening on the port"
+		}
+	}
+
+	vars.udp_host = "$check_address$"
+}

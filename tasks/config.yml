@@ -1,13 +1,26 @@
 ---
 - name: Ensure custom conf.d directory is present
   file:
-    path: "{{ icinga2_etc_root_dir }}/{{icinga2_etc_confd_dir}}"
+    path: "{{ config_root_dir }}/{{ confd_dir }}"
     state: directory
   tags: ['config']
 
 - name: Ensure config files are recursively included from conf.d dir
   lineinfile:
-    path: "{{ icinga2_config_file }}"
-    line: "include_recursive \"{{ icinga2_etc_confd_dir }}\""
+    path: "{{ main_config_file }}"
+    line: "include_recursive \"{{ confd_dir }}\""
     state: present
+  tags: ['config']
+
+- name: Ensure services.d directory is present
+  file:
+    path: "{{ config_root_dir }}/{{ services_dir }}"
+    state: directory
+  tags: ['config']
+
+- name: Deploy services configuration files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ config_root_dir }}/{{ services_dir }}/{{ item.dest }}"
+  with_items: "{{ services_config_files }}"
   tags: ['config']

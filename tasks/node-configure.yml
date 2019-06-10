@@ -3,7 +3,7 @@
   lineinfile:
     dest: "{{ config_root_dir }}/constants.conf"
     regexp: "const NodeName ="
-    line: "const NodeName = {{ icinga2_master_host }}"
+    line: "const NodeName = \"{{ icinga2_master_host }}\""
   when: icinga2_master_setup == true
   tags: ['install-icinga2-stack']
 

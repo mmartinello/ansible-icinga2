@@ -43,7 +43,7 @@
 
 - name: Ensure that CustomPluginsDir constant is defined
   lineinfile:
-    path: "{{ icinga2_constants_config_file }}"
+    path: "{{ constants_config_file }}"
     line: "const CustomPluginsDir = \"{{ plugins_dest_dir }}\""
   when: plugins_install == true
   tags: ['plugins']
@@ -51,6 +51,6 @@
 - name: Deploy Icinga Custom Plugins configuration file
   template:
     src: templates/custom-command-plugins.conf.j2
-    dest: "{{ icinga2_etc_root_dir }}/{{icinga2_etc_confd_dir}}/custom-command-plugins.conf"
+    dest: "{{ config_root_dir }}/{{ confd_dir }}/custom-command-plugins.conf"
   when: plugins_install == true
   tags: ['plugins']

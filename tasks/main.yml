@@ -1,28 +1,33 @@
 ---
 - include_tasks: vars.yml
-  tags: ['always']
+  tags: ['install-icinga2-stack', 'install-icinga2-ido']
 
 - include_tasks: install.yml
   tags: ['install-icinga2-stack', 'install-icinga2']
 
 - include_tasks: ido-install.yml
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']
+  when: icinga2_ido_enable == true
+  tags: ['install-icinga2-stack', 'install-icinga2-ido']  
 
 - include_tasks: configure.yml
   tags: ['install-icinga2-stack']
-
+  
 - include_tasks: node-configure.yml
   when: icinga2_master_setup == true
   tags: ['install-icinga2-stack']
 
+- include_tasks: client-configure.yml
+  tags: ['configure-client']
+
 - name: Restart Icinga 2
   service:
     name: icinga2
-    status: restarted
+    state: restarted
   when: icinga2_master_setup == true
   tags: ['install-icinga2-stack']
 
 - include_tasks: icingaweb2-install.yml
+  when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
 - include_tasks: icingaweb2-configure.yml

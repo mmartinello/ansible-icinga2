@@ -1,0 +1,93 @@
+apply Service "System Load" {
+  import "generic-service"
+  check_command = "load-windows"
+  command_endpoint = host.vars.client_endpoint
+  assign where host.vars.client_endpoint && host.vars.os == "Windows" && host.vars.check_load != false
+
+  if (host.vars.load_win_warn) {
+    vars.load_win_warn = host.vars.load_win_warn
+  }
+  if (host.vars.load_win_crit) {
+    vars.load_win_crit = host.vars.load_win_crit
+  }
+}
+
+apply Service "System Memory" {
+  import "generic-service"
+  check_command = "memory-windows"
+  command_endpoint = host.vars.client_endpoint
+  assign where host.vars.client_endpoint && host.vars.os == "Windows"
+}
+
+apply Service "Network" {
+  import "generic-service"
+  check_command = "network-windows"
+  command_endpoint = host.vars.client_endpoint
+  assign where host.vars.client_endpoint && host.vars.os == "Windows"
+}
+
+apply Service "Running Processes" {
+  import "generic-service"
+  check_command = "procs-windows"
+  command_endpoint = host.vars.client_endpoint
+  assign where host.vars.client_endpoint && host.vars.os == "Windows"
+}
+
+apply Service "Swap" {
+  import "generic-service"
+  check_command = "swap-windows"
+  command_endpoint = host.vars.client_endpoint
+  assign where host.vars.client_endpoint && host.vars.os == "Windows"
+}
+
+# The Icinga process on endpoint needs to run as privileged user to check
+# Windows Updates
+#apply Service "Windows Updates" {
+#  import "generic-service"
+#  check_command = "update-windows"
+#  command_endpoint = host.vars.client_endpoint
+#  assign where host.vars.client_endpoint && host.vars.os == "Windows"
+#}
+
+apply Service "System Uptime" {
+  import "generic-service"
+  check_command = "uptime-windows"
+  command_endpoint = host.vars.client_endpoint
+  assign where host.vars.client_endpoint && host.vars.os == "Windows"
+}
+
+apply Service "Logged Users" {
+  import "generic-service"
+  check_command = "users-windows"
+  command_endpoint = host.vars.client_endpoint
+  assign where host.vars.client_endpoint && host.vars.os == "Windows"
+}
+
+apply Service "Disks" {
+  import "generic-service"
+  check_command = "disk-windows"
+  command_endpoint = host.vars.client_endpoint
+  assign where host.vars.client_endpoint && host.vars.os == "Windows"
+}
+
+apply Service for (service_win_service => config in host.vars.win_services) {
+  import "generic-service"
+  check_command = "service-windows"
+  vars += config
+  command_endpoint = host.vars.client_endpoint
+  assign where host.vars.client_endpoint && host.vars.os == "Windows"
+}
+
+apply Service "Remote Desktop" {
+  import "generic-service"
+  check_command = "check_rdp"
+  assign where host.vars.os == "Windows"
+}
+
+apply Service for (check_flexicapture => config in host.vars.check_flexicapture) {
+  import "generic-service"
+  check_command = "check_flexicapture"
+  vars += config
+  command_endpoint = host.vars.client_endpoint
+  assign where host.vars.client_endpoint && host.vars.os == "Windows"
+}

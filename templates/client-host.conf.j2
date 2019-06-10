@@ -1,0 +1,26 @@
+object Zone "{{ inventory_hostname }}" {
+  endpoints = [ "{{ inventory_hostname }}" ]
+  parent = "{{ icinga2_master_host }}"
+}
+
+object Endpoint "{{ inventory_hostname }}" {
+  host = "{{ client_ip_address }}"
+}
+
+object Host "{{ inventory_hostname }}" {
+  import "generic-host"
+  address = "{{ client_ip_address }}"
+
+  vars.os = "{{ client_os }}"
+  vars.distro = "{{ client_distro }}"
+
+  vars.disks["disk"] = {
+    disk_all = true
+  }
+
+  vars.notification["mail"] = {
+    groups = [ "icingaadmins" ]
+  }
+
+  vars.client_endpoint = name
+}

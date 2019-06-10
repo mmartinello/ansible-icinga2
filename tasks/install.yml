@@ -1,4 +1,4 @@
 ---
 - include_tasks: install-Debian.yml
   when: ansible_os_family == 'Debian'
-  tags: install-icinga2
+  tags: ['install-icinga2-stack', 'install-icinga2']

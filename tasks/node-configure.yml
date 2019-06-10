@@ -1,16 +1,16 @@
 ---
 - name: Set Node Name
   lineinfile:
-    dest: /etc/icinga2/constants.conf
+    dest: "{{ config_root_dir }}/constants.conf"
     regexp: "const NodeName ="
-    line: "const NodeName = {{ icinga2_node_cn }}"
+    line: "const NodeName = {{ icinga2_master_host }}"
   when: icinga2_master_setup == true
   tags: ['install-icinga2-stack']
 
 - name: Copy zones configuration file
   template:
     src: templates/zones.conf.j2
-    dest: /etc/icinga2/zones.conf
+    dest: "{{ config_root_dir }}/zones.conf"
   when: icinga2_master_setup == true
   tags: ['install-icinga2-stack']
 
@@ -25,4 +25,7 @@
   command: icinga2 pki new-ca
   when: icinga2_master_setup == true and icinga2_ca_file.stat.exists == false
   tags: ['install-icinga2-stack']
-  
+
+#- name: Ensure zone directory exists
+#  file:
+#    path: "{{ config_root_dir }}/zones.d/{{   

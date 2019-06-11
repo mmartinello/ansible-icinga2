@@ -393,3 +393,15 @@ apply Service "Local date/time" {
     command_endpoint = host.vars.client_endpoint
   }
 }
+
+apply Service "CPU usage" {
+  import "generic-service"
+
+  check_command = "check_cpu"
+
+  assign where host.vars.os == "Linux"
+
+  if (host.vars.client_endpoint) {
+    command_endpoint = host.vars.client_endpoint
+  }
+}

@@ -133,12 +133,13 @@
     group: root
     mode: 0644
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
+  notify: Reload Icinga on master server
 
-- name: Reload Icinga on master server
-  service:
-    name: icinga2
-    state: reloaded
-  delegate_to: "{{ icinga2_master_inventory_hostname }}"
+#- name: Reload Icinga on master server
+#  service:
+#    name: icinga2
+#    state: reloaded
+#  delegate_to: "{{ icinga2_master_inventory_hostname }}"
 
 - name: Create the client configuration state file
   file:

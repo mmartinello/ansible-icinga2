@@ -12,7 +12,8 @@ icinga2_group: nagios
 
 # Configuration
 config_root_dir: '/etc/icinga2'
-confd_dir: 'custom-conf.d'
+confd_dir: 'conf.d'
+custom_confd_dir: 'custom-conf.d'
 services_dir: 'services.d'
 main_config_file: '/etc/icinga2/icinga2.conf'
 constants_config_file: '/etc/icinga2/constants.conf'

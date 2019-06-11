@@ -13,6 +13,13 @@
     dest: "{{ config_root_dir }}/zones.conf"
   when: icinga2_master_setup == true
   tags: ['install-icinga2-stack']
+  
+- name: Ensure that zone directory exists
+  file:
+    path: "{{ config_root_dir }}/zones.d/{{ icinga2_master_host }}"
+    state: directory
+  when: icinga2_master_setup == true
+  tags: ['install-icinga2-stack']
 
 - name: Check if CA certificate is already present
   stat:
@@ -25,7 +32,3 @@
   command: icinga2 pki new-ca
   when: icinga2_master_setup == true and icinga2_ca_file.stat.exists == false
   tags: ['install-icinga2-stack']
-
-#- name: Ensure zone directory exists
-#  file:
-#    path: "{{ config_root_dir }}/zones.d/{{   

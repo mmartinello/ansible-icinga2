@@ -1,0 +1,32 @@
+object CheckCommand "uptime" {
+        command = [ PluginDir + "/check_uptime" ]
+
+        arguments = {
+                "-w" = {
+                        value = "$uptime_warning$"
+                        description = "Report WARNING if system has been up for less then specified number of minutes"
+                }
+                "-c" = {
+                        value = "$uptime_critical$"
+                        description = "Report CRITICAL if system has been up for less then specified number of minutes"
+                }
+        }
+}
+
+object CheckCommand "memory" {
+        command = [ PluginDir + "/check_memory" ]
+
+        arguments = {
+                "-w" = {
+                        value = "$memory_warning$"
+                        description = "Percent free/used when to warn"
+                }
+                "-c" = {
+                        value = "$memory_critical$"
+                        description = "Percent free/used when critical"
+                }
+        }
+
+        vars.memory_warning = "20%"
+        vars.memory_critical = "10%"
+}

@@ -234,7 +234,21 @@ apply Service "Cron Daemon" {
     command_endpoint = host.vars.client_endpoint
   }
 
-  assign where host.vars.os == "Linux" && host.vars.check_cron == true
+  assign where host.vars.os == "Linux" && host.vars.check_cron != false
+}
+
+apply Service "Rsyslog Daemon" {
+  import "generic-service"
+  check_command = "procs"
+
+  vars.procs_command = "rsyslogd"
+  vars.procs_critical = "1:"
+
+  if (host.vars.client_endpoint) {
+    command_endpoint = host.vars.client_endpoint
+  }
+
+  assign where host.vars.os == "Linux" && host.vars.check_rsyslogd != false
 }
 
 apply Service for (simap => config in host.vars.simap) {
@@ -346,6 +360,36 @@ apply Service for (openvpn => config in host.vars.openvpn) {
   vars.udp_service = "rblcheckd"
 
   if (host.vars.client_endpoint && config.command_endpoint != "local") {
+    command_endpoint = host.vars.client_endpoint
+  }
+}
+
+apply Service "DNS Resolution" {
+  import "generic-service"
+
+  check_command = "dns"
+
+  assign where host.vars.os == "Linux"
+
+  vars.dns_lookup = "www.google.com"
+
+  if (host.vars.client_endpoint) {
+    command_endpoint = host.vars.client_endpoint
+  }
+}
+
+apply Service "Local date/time" {
+  import "generic-service"
+
+  check_command = "ntp_time"
+
+  assign where host.vars.os == "Linux"
+
+  vars.ntp_address = "ntp.ien.it"
+  vars.ntp_warning = "0.5"
+  vars.ntp_critical = "1"
+
+  if (host.vars.client_endpoint) {
     command_endpoint = host.vars.client_endpoint
   }
 }

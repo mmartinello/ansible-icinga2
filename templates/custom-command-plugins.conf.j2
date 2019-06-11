@@ -1,35 +1,35 @@
-#object CheckCommand "mem" {
-#        command = [ {{ plugins_custom_dir_var_name }} + "/check_mem.pl" ]
-#
-#        arguments = {
-#                "-u" = {
-#                        set_if = "$mem_used$"
-#                        description = "Check USED memory"
-#                }
-#                "-f" = {
-#                        set_if = "$mem_free$"
-#                        description = "Check FREE memory"
-#                }
-#                "-C" = {
-#                        set_if = "$mem_cache$"
-#                        description = "Count OS caches as FREE memory"
-#                }
-#                "-w" = {
-#                        value = "$mem_warning$"
-#                        description = "Percent free/used when to warn"
-#                }
-#                "-c" = {
-#                        value = "$mem_critical$"
-#                        description = "Percent free/used when critical"
-#                }
-#        }
-#
-#        vars.mem_used = false
-#        vars.mem_free = true
-#        vars.mem_cache = true
-#        vars.mem_warning = 20
-#        vars.mem_critical = 10
-#}
+object CheckCommand "check_mem" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_mem.pl" ]
+
+        arguments = {
+                "-u" = {
+                        set_if = "$mem_used$"
+                        description = "Check USED memory"
+                }
+                "-f" = {
+                        set_if = "$mem_free$"
+                        description = "Check FREE memory"
+                }
+                "-C" = {
+                        set_if = "$mem_cache$"
+                        description = "Count OS caches as FREE memory"
+                }
+                "-w" = {
+                        value = "$mem_warning$"
+                        description = "Percent free/used when to warn"
+                }
+                "-c" = {
+                        value = "$mem_critical$"
+                        description = "Percent free/used when critical"
+                }
+        }
+
+        vars.mem_used = false
+        vars.mem_free = true
+        vars.mem_cache = true
+        vars.mem_warning = 20
+        vars.mem_critical = 10
+}
 
 object CheckCommand "check_rdp" {
 	import "ipv4-or-ipv6"
@@ -685,4 +685,63 @@ object CheckCommand "udp_port" {
 	}
 
 	vars.udp_host = "$check_address$"
+}
+
+object CheckCommand "check_cpu" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_cpu.py" ]
+
+        arguments = {
+                "-w" = {
+                        value = "$cpu_warn$"
+                        description = "generate warning  if total cpu exceeds num (default: 95)"
+                }
+                "-c" = {
+                        value = "$cpu_crit$"
+                        description = "generate critical if total cpu exceeds num (default: 98)"
+                }
+                "-W" = {
+                        value = "$cpu_warn_any$"
+                        description = "generate warning  if any single cpu exceeds num (default: 98)"
+                }
+                "-C" = {
+                        value = "$cpu_crit_any$"
+                        description = "generate critical if any single cpu exceeds num (default: 100 (off))"
+                }
+                "-i" = {
+                        value = "$cpu_io_warn$"
+                        description = "generate warning  if any single cpu exceeds num in io_wait (default: 90)"
+                }
+                "-I" = {
+                        value = "$cpu_io_crit$"
+                        description = "generate critical if any single cpu exceeds num in io_wait (default: 98)"
+                }
+                "--io-warn-overall" = {
+                        value = "$cpu_io_warn_overall$"
+                        description = "generate warning  if overall cpu exceeds num in io_wait (default: 100 (off))"
+                }
+                "--io-crit-overall" = {
+                        value = "$cpu_io_crit_overall$"
+                        description = "generate critical if overall cpu exceeds num in io_wait (default: 100 (off))"
+                }
+                "-s" = {
+                        value = "$cpu_steal_warn$"
+                        description = "generate warning  if any single cpu exceeds num in steal (default: 30)"
+                }
+                "-S" = {
+                        value = "$cpu_$steal_crit"
+                        description = "generate critical if any single cpu exceeds num in steal (default: 80)"
+                }
+                "-p" = {
+                        value = "$cpu_period$"
+                        description = "sample cpu usage over num seconds"
+                }
+                "-a" = {
+                        set_if = "$cpu_abs$"
+                        description = "generate performance stats in cpu-ticks (jiffies), as well as percent"
+                }
+                "-A" = {
+                        set_if = "$cpu_abs_only$"
+                        description = "generate performance stats in cpu-ticks (jiffies), instead of percent"
+                }
+        }
 }

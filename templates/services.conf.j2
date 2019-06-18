@@ -251,6 +251,20 @@ apply Service "Rsyslog Daemon" {
   assign where host.vars.os == "Linux" && host.vars.check_rsyslogd != false
 }
 
+apply Service "SNMP Daemon" {
+  import "generic-service"
+  check_command = "procs"
+
+  vars.procs_command = "snmpd"
+  vars.procs_critical = "1:"
+
+  if (host.vars.client_endpoint) {
+    command_endpoint = host.vars.client_endpoint
+  }
+
+  assign where host.vars.os == "Linux" && host.vars.check_snmpd != false
+}
+
 apply Service for (simap => config in host.vars.simap) {
   import "generic-service"
 

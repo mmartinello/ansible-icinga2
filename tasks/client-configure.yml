@@ -4,6 +4,16 @@
     path: /root/.icinga2_client
   register: icinga2_client_file
   tags: ['configure-client']
+  
+- name: Get Virtual Machine type
+  command: virt-what
+  register: virt_what
+  tags: ['configure-client']
+
+- set_fact:
+    vm_type: "{{ virt_what.stdout }}"
+  when: virt_what.stdout != ""
+  tags: ['configure-client']
 
 - set_fact:
     icinga2_client_configured: true

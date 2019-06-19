@@ -2,6 +2,8 @@
 #########################################################################
 # Icinga 2
 
+vm_type: ""
+
 # Main service
 icinga2_enable_on_boot: true
 icinga2_api_accept_config: false

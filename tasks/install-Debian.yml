@@ -3,6 +3,7 @@
   apt:
     name:
       - apt-transport-https
+      - virt-what
     state: present
   tags: ['install-icinga2-stack', 'install-icinga2']
 

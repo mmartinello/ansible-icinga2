@@ -13,6 +13,9 @@ object Host "{{ inventory_hostname }}" {
 
   vars.os = "{{ client_os }}"
   vars.distro = "{{ client_distro }}"
+{% if vm_type != "" %}
+  vars.vm_type = "{{ vm_type }}"
+{% endif %}
 
   vars.disks["disk"] = {
     disk_all = true

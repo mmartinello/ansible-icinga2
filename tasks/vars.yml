@@ -2,10 +2,16 @@
 - name: Set default fact for mysql command
   set_fact:
     _mysql_cmd: 'mysql'
-  tags: ['always']
+  tags: ['install-icinga2-stack', 'install-icinga2-ido']
 
 - name: Set fact for mysql command if auth params are given
   set_fact:
     _mysql_cmd: 'mysql -h {{ icinga2_ido_db_host }} -u {{ icinga2_ido_db_user }} -p{{ icinga2_ido_db_password }}'
   when: icinga2_ido_db_host != 'localhost' and icinga2_ido_db_user != null and icinga2_ido_db_password != null
+  tags: ['install-icinga2-stack', 'install-icinga2-ido']
+
+- name: Set Monitoring Plugins for old Debian Versions
+  set_fact:
+    debian_monitoring_plugins: "{{ (debian_monitoring_plugins | difference(['libmonitoring-plugin-perl'])) + ['libnagios-plugin-perl'] }}"
+  when: ansible_distribution|lower == "debian" and ansible_distribution_release|lower == "jessie"
   tags: ['always']

@@ -3,19 +3,23 @@
   stat:
     path: /root/.icinga2_client
   register: icinga2_client_file
+  tags: ['configure-client']
 
 - set_fact:
     icinga2_client_configured: true
   when: icinga2_client_file.stat.exists == True
+  tags: ['configure-client']
 
 - name: Check if satellite is already configured on Icinga server
   stat:
     path: /root/.icinga2_client_configured
   register: icinga2_client_file
+  tags: ['configure-client']
 
 - set_fact:
     icinga2_client_configured: true
   when: icinga2_client_file.stat.exists == True and icinga2_client_reinstall == False
+  tags: ['configure-client']
   
 - name: Setup Icinga constants
   lineinfile:
@@ -26,6 +30,7 @@
     - { regexp: '^(\/\/)?const NodeName', line: 'const NodeName = "{{ inventory_hostname }}"' }
     - { regexp: '^(\/\/)?const ZoneName', line: 'const ZoneName = "{{ inventory_hostname }}"' }
     - { regexp: '^(\/\/)?const {{ plugins_custom_dir_var_name }} =(.+)', line: 'const {{ plugins_custom_dir_var_name }} = "{{ plugins_dest_dir }}"' }
+  tags: ['configure-client']
 
 - name: Setup Icinga zones
   template:
@@ -34,16 +39,19 @@
     owner: root
     group: root
     mode: 0644
+  tags: ['configure-client']
     
 - name: Generate a new key and CSR for new satellite on icinga server
   shell: cd /tmp && icinga2 pki new-cert --cn {{ inventory_hostname }} --key /tmp/{{ inventory_hostname }}.key --csr /tmp/{{ inventory_hostname }}.csr
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
   when: icinga2_client_configured == False
+  tags: ['configure-client']
 
 - name: Sign the certificate with the master CA certificate on the master node
   shell: icinga2 pki sign-csr --csr /tmp/{{ inventory_hostname }}.csr --cert /tmp/{{ inventory_hostname }}.crt
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
   when: icinga2_client_configured == False
+  tags: ['configure-client']
 
 - name: Download the CA certificate from Icinga master node
   fetch:
@@ -52,12 +60,14 @@
     flat: yes
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
   when: icinga2_client_configured == False
+  tags: ['configure-client']
 
 - name: Get files to be downloaded
   shell: "ls /tmp/{{ inventory_hostname }}.*"
   register: files_to_be_downloaded
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
   when: icinga2_client_configured == False
+  tags: ['configure-client']
 
 - name: Download certificates from Icinga master node
   fetch:
@@ -67,6 +77,7 @@
   with_items: "{{ files_to_be_downloaded.stdout_lines }}" 
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
   when: icinga2_client_configured == False
+  tags: ['configure-client']
 
 - name: Delete temporary files from Icinga master node
   file:
@@ -74,6 +85,7 @@
     state: absent
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
   when: icinga2_client_configured == False
+  tags: ['configure-client']
 
 - name: Copy CA and certs to client node
   copy:
@@ -86,6 +98,7 @@
   with_fileglob:
     - "/tmp/ansible/{{ inventory_hostname }}/icinga/*"
   when: icinga2_client_configured == False
+  tags: ['configure-client']
       
 - name: Delete temporary files from Ansible host
   local_action:
@@ -93,6 +106,7 @@
     path: "/tmp/ansible/{{ inventory_hostname }}"
     state: absent
   when: icinga2_client_configured == False
+  tags: ['configure-client']
 
 - name: Configure Icinga API on satellite
   template:
@@ -101,17 +115,20 @@
     owner: root
     group: root
     mode: 0644
+  tags: ['configure-client']
 
 - name: Enable Icinga API on satellite
   file:
     src: "{{ config_root_dir }}/features-available/api.conf"
     dest: "{{ config_root_dir }}/features-enabled/api.conf"
     state: link
+  tags: ['configure-client']
 
 - name: Disable Icinga notifier on satellite
   file:
     path: "{{ config_root_dir }}/features-enabled/notification.conf"
     state: absent
+  tags: ['configure-client']
 
 - name: Configure Icinga checker on satellite
   template:
@@ -120,6 +137,7 @@
     owner: root
     group: root
     mode: 0644
+  tags: ['configure-client']
 
 - name: Configure the client file on Icinga master server
   vars:
@@ -134,6 +152,7 @@
     mode: 0644
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
   notify: Reload Icinga on master server
+  tags: ['configure-client']
 
 #- name: Reload Icinga on master server
 #  service:
@@ -146,3 +165,4 @@
     path: /root/.icinga2_client_configured
     state: touch
   when: icinga2_client_configured == False
+  tags: ['configure-client']

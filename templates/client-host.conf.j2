@@ -23,4 +23,17 @@ object Host "{{ inventory_hostname }}" {
   }
 
   vars.client_endpoint = name
+
+  # Host Variables
+{% set host_vars = client_vars | default([]) %}
+{% for var_name, var_content in host_vars.items() %}
+{% for item in var_content %}
+  vars.{{ var_name }}["{{ item.name }}"] = {
+{% for param_name, param_value in item.params.items() %}
+    {{ param_name }} = "{{ param_value }}"
+{% endfor %}
+  }
+{% endfor %}    
+{%- endfor %}
+  # End Host Variables
 }

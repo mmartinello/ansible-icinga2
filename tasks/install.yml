@@ -1,4 +1,12 @@
 ---
 - include_tasks: install-Debian.yml
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family | lower in apt_distros
   tags: ['install-icinga2-stack', 'install-icinga2']
+
+- include_tasks: install-Centos.yml
+  when: ansible_os_family | lower in yum_distros
+  tags: ['install-icinga2-stack', 'install-icinga2']
+
+- include_tasks: install-Windows.yml
+  when: ansible_os_family == "Windows"
+  tags: ['install-icinga2']

@@ -565,52 +565,52 @@ object CheckCommand "check_kernel" {
         command = [ {{ plugins_custom_dir_var_name }} + "/check_kernel.sh" ]
 }
 
-#object CheckCommand "yum" {
-#        command = [ {{ plugins_custom_dir_var_name }} + "/check_yum.py" ]
-#
-#        arguments = {
-#                "-A" = {
-#                        value = "$yum_all_updates$"
-#                        description = "Does not distinguish between security and non-security updates, but returns critical for any available update."
-#                }
-#                "-W" = {
-#                        value = "$yum_warn_on_any_update$"
-#                        description = "Warns if there are any (non-security) package updates available."
-#                }
-#                "-C" = {
-#                        value = "$yum_cache_only$"
-#                        description = "Run entirely from cache and do not update the cache when running yum."
-#                }
-#                "-c" = {
-#                        value = "$yum_config$"
-#                        description = "Run with custom repository config"
-#                }
-#                "-N" = {
-#                        value = "$yum_no_warn_on_lock$"
-#                        description = "Return OK instead of WARNING when yum is locked and fails to check for updates due to another instance running"
-#                }
-#                "-e" = {
-#                        value = "$yum_enablerepo$"
-#                        description = "Explicitly enables a reposity when calling yum. Can take a comma separated list of repositories"
-#                }
-#                "-d" = {
-#                        value = "$yum_disablerepo$"
-#                        description = "Explicitly disables a repository when calling yum. Can take a comma separated list of repositories"
-#                }
-#                "--disableplugin" = {
-#                        value = "$yum_disableplugin$"
-#                        description = "Explicitly disables a plugin when calling yum. Can take a comma separated list of plugins"
-#                }
-#                "-t" = {
-#                        value = "$yum_timeout$"
-#                        description = "Sets a timeout in seconds after which the plugin will exit (defaults to 30 seconds)"
-#                }
-#                "-" = {
-#                        value = "$yum_verbose$"
-#                        description = "Verbose mode"
-#                }
-#        }
-#}
+object CheckCommand "check_yum" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_yum.py" ]
+
+        arguments = {
+                "-A" = {
+                        value = "$yum_all_updates$"
+                        description = "Does not distinguish between security and non-security updates, but returns critical for any available update."
+                }
+                "-W" = {
+                        value = "$yum_warn_on_any_update$"
+                        description = "Warns if there are any (non-security) package updates available."
+                }
+                "-C" = {
+                        value = "$yum_cache_only$"
+                        description = "Run entirely from cache and do not update the cache when running yum."
+                }
+                "-c" = {
+                        value = "$yum_config$"
+                        description = "Run with custom repository config"
+                }
+                "-N" = {
+                        value = "$yum_no_warn_on_lock$"
+                        description = "Return OK instead of WARNING when yum is locked and fails to check for updates due to another instance running"
+                }
+                "-e" = {
+                        value = "$yum_enablerepo$"
+                        description = "Explicitly enables a reposity when calling yum. Can take a comma separated list of repositories"
+                }
+                "-d" = {
+                        value = "$yum_disablerepo$"
+                        description = "Explicitly disables a repository when calling yum. Can take a comma separated list of repositories"
+                }
+                "--disableplugin" = {
+                        value = "$yum_disableplugin$"
+                        description = "Explicitly disables a plugin when calling yum. Can take a comma separated list of plugins"
+                }
+                "-t" = {
+                        value = "$yum_timeout$"
+                        description = "Sets a timeout in seconds after which the plugin will exit (defaults to 30 seconds)"
+                }
+                "-" = {
+                        value = "$yum_verbose$"
+                        description = "Verbose mode"
+                }
+        }
+}
 
 object CheckCommand "icecast2" {
         import "ipv4-or-ipv6"

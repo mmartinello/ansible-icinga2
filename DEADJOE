@@ -1,0 +1,46 @@
+
+*** These modified files were found in JOE when it aborted on Fri Jun 21 14:18:03 2019
+*** JOE was aborted because the terminal closed
+
+*** File '(Unnamed)'
+ansible_distribution_release
+hosts_
+CustomPluginDir
+CustomPlugisnDir
+CustomPluginsDir
+delegate_to: "{{ icinga2_master_inventory_hostname }}"
+{{ config_root_dir }}
+tags: ['install-icinga2-stack', 'config']
+custom_confd_dir
+
+*** File '(Unnamed)'
+cpu
+cpu
+snmp
+plugin
+config
+host
+yum
+package
+package;
+package:
+
+*** File '(Unnamed)'
+main.yml
+main.yml
+config.yml
+config.yml
+plays/icinga2-uninstall.
+tasks/main.yml
+plays/icinga.yml
+plays/icinga2-uninstall.
+plays/icinga2-uninstall.yml
+tasks/install-Centos.yml
+tasks/install-Centos.yml
+tasks/install-Centos.yml
+
+*** File '* Startup Log *'
+Processing '/etc/joe/joerc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/joerc

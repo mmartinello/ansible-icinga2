@@ -4,6 +4,9 @@
     name:
       - apt-transport-https
       - virt-what
+      - rsync
+      - nmap
+      - bc
     state: present
   tags: ['install-icinga2-stack', 'install-icinga2']
 
@@ -30,4 +33,4 @@
     name: "{{ debian_monitoring_plugins }}"
     state: present
     update_cache: yes
-  tags: ['install-icinga2-stack', 'install-icinga2-plugins']
+  tags: ['install-icinga2-stack', 'install-icinga2', 'install-icinga2-plugins']

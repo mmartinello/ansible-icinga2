@@ -151,7 +151,8 @@ apply Service for (ftp => config in host.vars.ftp) {
 apply Service "System Memory" {
   import "generic-service"
 
-  check_command = "memory"
+  # check_command = "memory"
+  check_command = "check_mem"
 
   assign where (host.vars.os == "Linux" || host.vars.os == "FreeBSD") && !host.vars.nrpe
 
@@ -227,7 +228,12 @@ apply Service "Cron Daemon" {
   import "generic-service"
   check_command = "procs"
 
-  vars.procs_command = "cron"
+  if (host.vars.distro == "CentOS" || host.vars.distro == "Redhat") {
+    vars.procs_command = "crond"
+  } else {
+    vars.procs_command = "cron"
+  }
+
   vars.procs_critical = "1:"
 
   if (host.vars.client_endpoint) {
@@ -324,7 +330,7 @@ apply Service "APT Packages Updates" {
 apply Service "YUM Packages Updates" {
   import "generic-service"
 
-  check_command = "yum"
+  check_command = "check_yum"
 
   assign where host.vars.distro == "CentOS" || host.vars.distro == "Redhat Enterprise Linux" || host.vars.distro == "Sangoma"
 

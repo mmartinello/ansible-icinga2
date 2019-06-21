@@ -1,0 +1,5 @@
+---
+- name: Install Icinga 2
+  package: name=icinga2 state=present
+  notify: Restart Icinga2
+  tags: ['install-icinga2-stack', 'install-icinga2']

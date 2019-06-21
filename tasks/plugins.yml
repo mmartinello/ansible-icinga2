@@ -1,9 +1,4 @@
 ---
-- name: Install Rsync
-  package: name=rsync state=present
-  when: plugins_install == true
-  tags: ['plugins']
-
 - name: get the username running the deploy
   local_action: shell whoami
   register: remote_username

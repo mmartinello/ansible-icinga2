@@ -1,0 +1,34 @@
+---
+- set_fact:
+    icinga2_user: "icinga"
+    icinga2_group: "icinga"
+
+- name: Install required packages
+  yum:
+    name:
+      - virt-what
+      - rsync
+      - nmap
+      - bc
+    state: present
+  tags: ['install-icinga2-stack', 'install-icinga2']
+
+- name: Activate EPEL and Icinga2 Repositories
+  package: name={{item}} state=present
+  with_items:
+    - epel-release
+    - https://packages.icinga.com/epel/icinga-rpm-release-7-latest.noarch.rpm
+  tags: ['install-icinga2-stack', 'install-icinga2']
+
+- name: Install Icinga 2
+  yum:
+    name: icinga2
+    state: present
+  notify: Restart Icinga2
+  tags: ['install-icinga2-stack', 'install-icinga2']
+
+- name: Install Monitoring Plugins
+  yum:
+    name: "{{ centos_monitoring_plugins }}"
+    state: present
+  tags: ['install-icinga2-stack', 'install-icinga2', 'install-icinga2-plugins']

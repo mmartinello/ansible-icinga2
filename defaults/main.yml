@@ -4,6 +4,17 @@
 
 vm_type: ""
 
+# APT Distributions (in lower case!)
+apt_distros:
+  - debian
+  - ubuntu
+
+# YUM Distributions (in lower case!)
+yum_distros:
+  - centos
+  - redhat
+  - red hat enterprise linux
+
 # Main service
 icinga2_enable_on_boot: true
 icinga2_api_accept_config: false
@@ -17,11 +28,18 @@ config_root_dir: '/etc/icinga2'
 confd_dir: 'conf.d'
 custom_confd_dir: 'custom-conf.d'
 services_dir: 'services.d'
+hosts_dir: 'hosts.d'
+hosts_confs_dir: '' # FIXME: da verificare, vorrei fosse null
 main_config_file: '/etc/icinga2/icinga2.conf'
 constants_config_file: '/etc/icinga2/constants.conf'
+
 services_config_files:
   - { src: 'services.conf.j2', dest: 'services.conf' }
   - { src: 'services-windows.conf.j2', dest: 'services-windows.conf' }
+
+default_unnecessary_config_files:
+  - /etc/icinga2/conf.d/services.conf
+  - /etc/icinga2/conf.d/apt.conf
 
 # Client configuration
 icinga2_client_configured: false  
@@ -34,7 +52,15 @@ debian_monitoring_plugins:
   - monitoring-plugins-standard
   - nagios-plugins-basic
   - nagios-plugins-contrib
+  - nagios-nrpe-plugin
   - libmonitoring-plugin-perl
+  - libjson-perl
+
+centos_monitoring_plugins:
+  - nagios-plugins-all
+  - nagios-plugins-uptime
+  - perl-Monitoring-Plugin
+  - perl-Nagios-Plugin
 
 # IDO
 icinga2_ido_enable: false

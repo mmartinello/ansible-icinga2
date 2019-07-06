@@ -15,6 +15,8 @@ yum_distros:
   - redhat
   - red hat enterprise linux
 
+
+
 # Main service
 icinga2_enable_on_boot: true
 icinga2_api_accept_config: false
@@ -123,3 +125,12 @@ plugins_install: true
 plugins_src_dir: 'files/icinga-plugins'
 plugins_dest_dir: '/opt/icinga-plugins'
 plugins_custom_dir_var_name: 'CustomPluginsDir'
+
+
+#########################################################################
+# Windows
+
+# Windows installation MSI
+win_icinga2_msi_32bit: https://packages.icinga.com/windows/Icinga2-v2.10.5-x86.msi
+win_icinga2_msi_64bit: https://packages.icinga.com/windows/Icinga2-v2.10.5-x86_64.msi
+win_package_product_id: 712727BA-156F-466A-9C25-7A6246602664

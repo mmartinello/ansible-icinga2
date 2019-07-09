@@ -1,0 +1,82 @@
+---
+# FIXME: adapt for Windows
+#- name: Get Virtual Machine type
+#  command: virt-what
+#  register: virt_what
+#  tags: ['configure-client']
+
+#- set_fact:
+#    vm_type: "{{ virt_what.stdout }}"
+#  when: virt_what.stdout != ""
+#  tags: ['configure-client']
+
+- name: Setup Icinga constants
+  lineinfile:
+    path: "{{ config_root_dir }}/constants.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: '^(\/\/)?const NodeName', line: 'const NodeName = "{{ inventory_hostname }}"' }
+    - { regexp: '^(\/\/)?const ZoneName', line: 'const ZoneName = "{{ inventory_hostname }}"' }
+    - { regexp: '^(\/\/)?const {{ plugins_custom_dir_var_name }} =(.+)', line: 'const {{ plugins_custom_dir_var_name }} = "{{ plugins_dest_dir }}"' }
+  tags: ['configure-client']
+
+- name: Setup Icinga zones
+  template:
+    src: ../templates/client-zones.conf.j2
+    dest: "{{ config_root_dir }}/zones.conf"
+    owner: root
+    group: root
+    mode: 0644
+  tags: ['configure-client']
+    
+- name: Copy CA and certs to client node
+  copy:
+    src: "{{ item }}"
+    dest: /var/lib/icinga2/certs/
+    owner: "{{ icinga2_user }}"
+    group: "{{ icinga2_group }}"
+    mode: 0600
+    directory_mode: 0700
+  with_fileglob:
+    - "/tmp/ansible/{{ inventory_hostname }}/icinga/*"
+  when: icinga2_client_configured == False
+  tags: ['configure-client']
+      
+- name: Configure Icinga API on satellite
+  template:
+    src: client-api.conf.j2
+    dest: "{{ config_root_dir }}/features-available/api.conf"
+    owner: root
+    group: root
+    mode: 0644
+  tags: ['configure-client']
+
+- name: Enable Icinga API on satellite
+  file:
+    src: "{{ config_root_dir }}/features-available/api.conf"
+    dest: "{{ config_root_dir }}/features-enabled/api.conf"
+    state: link
+  tags: ['configure-client']
+
+- name: Disable Icinga notifier on satellite
+  file:
+    path: "{{ config_root_dir }}/features-enabled/notification.conf"
+    state: absent
+  tags: ['configure-client']
+
+- name: Configure Icinga checker on satellite
+  template:
+    src: client-checker.conf.j2
+    dest: "{{ config_root_dir }}/features-available/checker.conf"
+    owner: root
+    group: root
+    mode: 0644
+  tags: ['configure-client']
+
+- name: Create the client configuration state file
+  file:
+    path: /root/.icinga2_client_configured
+    state: touch
+  when: icinga2_client_configured == False
+  tags: ['configure-client']

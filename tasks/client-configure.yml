@@ -1,20 +1,4 @@
 ---
-- name: Check if satellite is already configured on Icinga server
-  stat:
-    path: /root/.icinga2_client
-  register: icinga2_client_file
-  tags: ['configure-client']
-  
-- name: Get Virtual Machine type
-  command: virt-what
-  register: virt_what
-  tags: ['configure-client']
-
-- set_fact:
-    vm_type: "{{ virt_what.stdout }}"
-  when: virt_what.stdout != ""
-  tags: ['configure-client']
-
 - set_fact:
     icinga2_client_configured: true
   when: icinga2_client_file.stat.exists == True
@@ -24,35 +8,24 @@
   stat:
     path: /root/.icinga2_client_configured
   register: icinga2_client_file
+  when: ansible_system == "Linux"
   tags: ['configure-client']
+
+# FIXME: adapt for Windows  
+#- name: Check if satellite is already configured on Icinga server
+#  stat:
+#    path: /root/.icinga2_client_configured
+#  register: icinga2_client_file
+#  when: ansible_os_family == "Windows"
+#  tags: ['configure-client']
 
 - set_fact:
     icinga2_client_configured: true
   when: icinga2_client_file.stat.exists == True and icinga2_client_reinstall == False
   tags: ['configure-client']
-  
-- name: Setup Icinga constants
-  lineinfile:
-    path: "{{ config_root_dir }}/constants.conf"
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-  with_items:
-    - { regexp: '^(\/\/)?const NodeName', line: 'const NodeName = "{{ inventory_hostname }}"' }
-    - { regexp: '^(\/\/)?const ZoneName', line: 'const ZoneName = "{{ inventory_hostname }}"' }
-    - { regexp: '^(\/\/)?const {{ plugins_custom_dir_var_name }} =(.+)', line: 'const {{ plugins_custom_dir_var_name }} = "{{ plugins_dest_dir }}"' }
-  tags: ['configure-client']
 
-- name: Setup Icinga zones
-  template:
-    src: ../templates/client-zones.conf.j2
-    dest: "{{ config_root_dir }}/zones.conf"
-    owner: root
-    group: root
-    mode: 0644
-  tags: ['configure-client']
-    
 - name: Generate a new key and CSR for new satellite on icinga server
-  shell: cd /tmp && icinga2 pki new-cert --cn {{ inventory_hostname }} --key /tmp/{{ inventory_hostname }}.key --csr /tmp/{{ inventory_hostname }}.csr
+  shell: cd /tmp && icinga2 pki new-cert --cn {{ inventory_hostname }} --key /tmp/{{ inventory_hostname }}.key --csr /tmp/{{ inventory_hostname 
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
   when: icinga2_client_configured == False
   tags: ['configure-client']
@@ -96,57 +69,21 @@
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
   when: icinga2_client_configured == False
   tags: ['configure-client']
-
-- name: Copy CA and certs to client node
-  copy:
-    src: "{{ item }}"
-    dest: /var/lib/icinga2/certs/
-    owner: "{{ icinga2_user }}"
-    group: "{{ icinga2_group }}"
-    mode: 0600
-    directory_mode: 0700
-  with_fileglob:
-    - "/tmp/ansible/{{ inventory_hostname }}/icinga/*"
-  when: icinga2_client_configured == False
+  
+- include_tasks: client-configure-Linux.yml
+  when: ansible_system == "Linux"
   tags: ['configure-client']
-      
+
+- include_tasks: client-configure-Windows.yml
+  when: ansible_os_family == "Windows"
+  tags: ['configure-client']
+
 - name: Delete temporary files from Ansible host
   local_action:
     module: file
     path: "/tmp/ansible/{{ inventory_hostname }}"
     state: absent
   when: icinga2_client_configured == False
-  tags: ['configure-client']
-
-- name: Configure Icinga API on satellite
-  template:
-    src: client-api.conf.j2
-    dest: "{{ config_root_dir }}/features-available/api.conf"
-    owner: root
-    group: root
-    mode: 0644
-  tags: ['configure-client']
-
-- name: Enable Icinga API on satellite
-  file:
-    src: "{{ config_root_dir }}/features-available/api.conf"
-    dest: "{{ config_root_dir }}/features-enabled/api.conf"
-    state: link
-  tags: ['configure-client']
-
-- name: Disable Icinga notifier on satellite
-  file:
-    path: "{{ config_root_dir }}/features-enabled/notification.conf"
-    state: absent
-  tags: ['configure-client']
-
-- name: Configure Icinga checker on satellite
-  template:
-    src: client-checker.conf.j2
-    dest: "{{ config_root_dir }}/features-available/checker.conf"
-    owner: root
-    group: root
-    mode: 0644
   tags: ['configure-client']
 
 - name: Configure the client file on Icinga master server
@@ -164,15 +101,17 @@
   notify: Reload Icinga on master server
   tags: ['configure-client']
 
-#- name: Reload Icinga on master server
-#  service:
-#    name: icinga2
-#    state: reloaded
-#  delegate_to: "{{ icinga2_master_inventory_hostname }}"
-
 - name: Create the client configuration state file
   file:
     path: /root/.icinga2_client_configured
     state: touch
-  when: icinga2_client_configured == False
+  when: icinga2_client_configured == False and ansible_system == "Linux"
   tags: ['configure-client']
+
+# FIXME: adapt for Windows
+#- name: Create the client configuration state file
+#  file:
+#    path: /root/.icinga2_client_configured
+#    state: touch
+#  when: icinga2_client_configured == False and ansible_os_family == "Windows"
+#  tags: ['configure-client']

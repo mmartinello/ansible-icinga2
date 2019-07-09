@@ -2,11 +2,13 @@
 - set_fact:
     package_url: "{{ win_icinga2_msi_64bit }}"
   when: ansible_architecture == "64-bit"
+  tags: ['install-icinga2-stack', 'install-icinga2']
  
 # FIXME: check if OS really is 32 bit 
 - set_fact:
     package_url: "{{ win_icinga2_msi_32bit }}"
   when: ansible_architecture != "64-bit"
+  tags: ['install-icinga2-stack', 'install-icinga2']
 
 - name: Install Icinga 2
   win_package:

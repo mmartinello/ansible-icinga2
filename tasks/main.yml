@@ -46,10 +46,3 @@
 - include_tasks: plugins.yml
   when: plugins_install == true
   tags: ['plugins']
-
-- name: Ensure Icinga is started and enabled on boot.
-  service:
-    name: icinga2
-    state: started
-    enabled: "{{ icinga2_enable_on_boot }}"
-  tags: ['install-icinga2-stack', 'install-icinga2']

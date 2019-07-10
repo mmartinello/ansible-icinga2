@@ -1,0 +1,68 @@
+---
+- name: get the username running the deploy
+  local_action: shell whoami
+  register: remote_username
+  vars:
+    ansible_become: no
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: Allow RSYNC for new super user without SUDO password
+  blockinfile:
+    path: /etc/sudoers.d/zzz-ansible-temp
+    state: present
+    create: yes
+    marker: "\n# ----- {mark} ANSIBLE MANAGED BLOCK -----\n"
+    block: |
+
+      {{ remote_username.stdout }} ALL=NOPASSWD: /usr/bin/rsync
+      Defaults:{{ remote_username.stdout }}        !requiretty
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: Deploy Icinga Custom Plugins
+  synchronize:
+    src: "files/icinga2-custom-plugins/"
+    dest: "{{ plugins_dest_dir }}"
+    delete: yes
+    recursive: yes
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: Disallow RSYNC for new super user without SUDO password
+  file:
+    path: /etc/sudoers.d/zzz-ansible-temp
+    state: absent
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: Ensure that CustomPluginsDir constant is defined
+  lineinfile:
+    path: "{{ config_root_dir }}/{{ constants_config_file }}"
+    line: "const CustomPluginsDir = \"{{ plugins_dest_dir }}\""
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: Deploy Icinga Plugins configuration file
+  template:
+    src: templates/command-plugins.conf.j2
+    dest: "{{ config_root_dir }}/{{ custom_confd_dir }}/command-plugins.conf"
+  when: plugins_install == true
+  tags: ['plugins']
+  notify: Reload Icinga2
+
+- name: Deploy Icinga Custom Plugins configuration file
+  template:
+    src: templates/custom-command-plugins.conf.j2
+    dest: "{{ config_root_dir }}/{{ custom_confd_dir }}/custom-command-plugins.conf"
+  when: plugins_install == true
+  tags: ['plugins']
+  notify: Reload Icinga2
+
+- name: Deploy services configuration files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ config_root_dir }}/{{ services_dir }}/{{ item.dest }}"
+  with_items: "{{ services_config_files }}"
+  tags: ['plugins']
+  notify: Reload Icinga2

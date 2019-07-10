@@ -1,0 +1,23 @@
+object CheckCommand "check_flexicapture" {
+        command = [ PluginDir + "/check_flexicapture.exe", "$check_flexicapture_service$"]
+
+        arguments = {
+				"--expect" = {
+						value = "$check_flexicapture_expected$"
+						description = "Expected value for a positive exit (started|stopped)"
+				}
+				"--warn" = {
+						value = "$check_flexicapture_warn$"
+						description = "Minimum failed station to give a warning alarm"
+				}
+				"--crit" = {
+						value = "$check_flexicapture_crit$"
+						description = "Minimum failed station to give a critical alarm"
+				}
+        }
+
+        vars.check_flexicapture_service = "stations"
+		vars.check_flexicapture_expected = "started"
+		vars.check_flexicapture_warn = "1"
+		vars.check_flexicapture_crit = "2"
+}

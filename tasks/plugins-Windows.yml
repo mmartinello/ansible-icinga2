@@ -1,0 +1,40 @@
+---
+- name: Deploy Icinga Custom Plugins
+  win_copy:
+    src: "{{ item }}"
+    dest: "{{ win_plugins_dest_dir }}"
+  with_fileglob:
+    - "files/icinga2-custom-plugins-windows/*"
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: Ensure that CustomPluginsDir constant is defined
+  win_lineinfile:
+    path: "{{ win_config_root_dir }}/{{ constants_config_file }}"
+    line: "const CustomPluginsDir = \"{{ plugins_dest_dir }}\""
+  when: plugins_install == true
+  tags: ['plugins']
+
+- name: Deploy Icinga Plugins configuration file
+  win_template:
+    src: templates/command-plugins.conf.j2
+    dest: "{{ win_config_root_dir }}/{{ custom_confd_dir }}/command-plugins.conf"
+  when: plugins_install == true
+  tags: ['plugins']
+  notify: Restart Icinga2 on Windows
+
+- name: Deploy Icinga Custom Plugins configuration file
+  win_template:
+    src: templates/custom-command-plugins.conf.j2
+    dest: "{{ win_config_root_dir }}/{{ custom_confd_dir }}/custom-command-plugins.conf"
+  when: plugins_install == true
+  tags: ['plugins']
+  notify: Restart Icinga2 on Windows
+
+- name: Deploy services configuration files
+  win_template:
+    src: "{{ item.src }}"
+    dest: "{{ win_config_root_dir }}/{{ services_dir }}/{{ item.dest }}"
+  with_items: "{{ services_config_files }}"
+  tags: ['plugins']
+  notify: Restart Icinga2 on Windows

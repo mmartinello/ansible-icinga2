@@ -6,13 +6,12 @@
   when: ansible_system == "Linux"
   tags: ['configure-client']
 
-# FIXME: adapt for Windows  
-#- name: Check if satellite is already configured on Icinga server
-#  stat:
-#    path: /root/.icinga2_client_configured
-#  register: icinga2_client_file
-#  when: ansible_os_family == "Windows"
-#  tags: ['configure-client']
+- name: Check if satellite is already configured on Icinga server
+  win_stat:
+    path: path: "{{ win_config_root_dir }}\.icinga2_client_configured"
+  register: icinga2_client_file
+  when: ansible_os_family == "Windows"
+  tags: ['configure-client']
 
 - set_fact:
     icinga2_client_configured: true
@@ -103,10 +102,9 @@
   when: icinga2_client_configured == False and ansible_system == "Linux"
   tags: ['configure-client']
 
-# FIXME: adapt for Windows
-#- name: Create the client configuration state file
-#  file:
-#    path: /root/.icinga2_client_configured
-#    state: touch
-#  when: icinga2_client_configured == False and ansible_os_family == "Windows"
-#  tags: ['configure-client']
+- name: Create the client configuration state file
+  win_file:
+    path: "{{ win_config_root_dir }}\.icinga2_client_configured"
+    state: touch
+  when: icinga2_client_configured == False and ansible_os_family == "Windows"
+  tags: ['configure-client']

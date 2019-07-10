@@ -12,13 +12,13 @@
 
 - name: Setup Icinga constants
   win_lineinfile:
-    path: "{{ win_config_root_dir }}/constants.conf"
+    path: "{{ win_config_root_dir }}/{{ constants_config_file }}"
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
   with_items:
     - { regexp: '^(\/\/)?const NodeName', line: 'const NodeName = "{{ inventory_hostname }}"' }
     - { regexp: '^(\/\/)?const ZoneName', line: 'const ZoneName = "{{ inventory_hostname }}"' }
-    #- { regexp: '^(\/\/)?const {{ plugins_custom_dir_var_name }} =(.+)', line: 'const {{ plugins_custom_dir_var_name }} = "{{ plugins_dest_dir }}"' }
+    - { regexp: '^(\/\/)?const {{ plugins_custom_dir_var_name }} =(.+)', line: 'const {{ plugins_custom_dir_var_name }} = "{{ win_plugin_dest_dir }}"' }
   tags: ['configure-client']
 
 - name: Setup Icinga zones
@@ -46,10 +46,10 @@
   tags: ['configure-client']
 
 - name: Enable Icinga API on satellite
-  win_file:
-    src: "{{ win_config_root_dir }}/features-available/api.conf"
-    dest: "{{ win_config_root_dir }}/features-enabled/api.conf"
-    state: link
+  win_lineinfile:
+    path: "{{ win_config_root_dir }}/features-enabled/api.conf"
+    regexp: '^(\/\/)?include "../features-available/api.conf"'
+    line: 'include "../features-available/api.conf"'
   tags: ['configure-client']
 
 - name: Disable Icinga notifier on satellite
@@ -65,12 +65,4 @@
     owner: root
     group: root
     mode: 0644
-  tags: ['configure-client']
-
-# FIXME: adapt path for Windows
-- name: Create the client configuration state file
-  win_file:
-    path: /root/.icinga2_client_configured
-    state: touch
-  when: icinga2_client_configured == False
   tags: ['configure-client']

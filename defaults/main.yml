@@ -27,13 +27,15 @@ icinga2_group: nagios
 
 # Configuration
 config_root_dir: '/etc/icinga2'
+win_config_root_dir: 'C:\ProgramData\icinga2\etc\icinga2'
 confd_dir: 'conf.d'
 custom_confd_dir: 'custom-conf.d'
 services_dir: 'services.d'
 hosts_dir: 'hosts.d'
 hosts_confs_dir: '' # FIXME: da verificare, vorrei fosse null
-main_config_file: '/etc/icinga2/icinga2.conf'
-constants_config_file: '/etc/icinga2/constants.conf'
+main_config_file: 'icinga2.conf'
+constants_config_file: 'constants.conf'
+win_client_certs_dir: 'C:\ProgramData\icinga2\var\lib\icinga2\certs'
 
 services_config_files:
   - { src: 'services.conf.j2', dest: 'services.conf' }
@@ -124,6 +126,7 @@ icingaweb2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DRO
 plugins_install: true
 plugins_src_dir: 'files/icinga-plugins'
 plugins_dest_dir: '/opt/icinga-plugins'
+win_plugin_dest_dir: 'C:\Program Files\ICINGA2\sbin'
 plugins_custom_dir_var_name: 'CustomPluginsDir'
 
 

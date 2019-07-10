@@ -25,4 +25,8 @@ object Zone "director-global" {
 	global = true
 }
 
-
+{% if ansible_os_family == "Windows" %}
+object Zone "windows-templates" {
+        global = true
+}
+{% endif %}

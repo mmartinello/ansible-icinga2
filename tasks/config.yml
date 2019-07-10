@@ -7,7 +7,7 @@
 
 - name: Ensure config files are recursively included from conf.d dir
   lineinfile:
-    path: "{{ main_config_file }}"
+    path: "{{ config_root_dir }}/{{ main_config_file }}"
     line: "include_recursive \"{{ custom_confd_dir }}\""
     state: present
   tags: ['install-icinga2-stack', 'config']
@@ -23,7 +23,7 @@
   
 - name: Ensure config files are recursively included from services dir
   lineinfile:
-    path: "{{ main_config_file }}"
+    path: "{{ config_root_dir }}/{{ main_config_file }}"
     line: "include_recursive \"{{ services_dir }}\""
     state: present
   tags: ['install-icinga2-stack', 'config']

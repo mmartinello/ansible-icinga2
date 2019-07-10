@@ -1,10 +1,4 @@
 ---
-#- name: Check if satellite is already configured on Icinga server
-#  stat:
-#    path: /root/.icinga2_client
-#  register: icinga2_client_file
-#  tags: ['configure-client']
-  
 - name: Get Virtual Machine type
   command: virt-what
   register: virt_what
@@ -14,17 +8,6 @@
     vm_type: "{{ virt_what.stdout }}"
   when: virt_what.stdout != ""
   tags: ['configure-client']
-
-#- set_fact:
-#    icinga2_client_configured: true
-#  when: icinga2_client_file.stat.exists == True
-#  tags: ['configure-client']
-
-#- name: Check if satellite is already configured on Icinga server
-#  stat:
-#    path: /root/.icinga2_client_configured
-#  register: icinga2_client_file
-#  tags: ['configure-client']
 
 - set_fact:
     icinga2_client_configured: true
@@ -51,52 +34,6 @@
     mode: 0644
   tags: ['configure-client']
     
-#- name: Generate a new key and CSR for new satellite on icinga server
-#  shell: cd /tmp && icinga2 pki new-cert --cn {{ inventory_hostname }} --key /tmp/{{ inventory_hostname }}.key --csr /tmp/{{ inventory_hostname }}.csr
-#  delegate_to: "{{ icinga2_master_inventory_hostname }}"
-#  when: icinga2_client_configured == False
-#  tags: ['configure-client']
-
-#- name: Sign the certificate with the master CA certificate on the master node
-#  shell: icinga2 pki sign-csr --csr /tmp/{{ inventory_hostname }}.csr --cert /tmp/{{ inventory_hostname }}.crt
-#  delegate_to: "{{ icinga2_master_inventory_hostname }}"
-#  when: icinga2_client_configured == False
-#  tags: ['configure-client']
-
-#- name: Download the CA certificate from Icinga master node
-#  fetch:
-#    src: /var/lib/icinga2/ca/ca.crt
-#    dest: "/tmp/ansible/{{ inventory_hostname }}/icinga/ca.crt"
-#    flat: yes
-#  delegate_to: "{{ icinga2_master_inventory_hostname }}"
-#  when: icinga2_client_configured == False
-#  tags: ['configure-client']
-
-#- name: Get files to be downloaded
-#  shell: "ls /tmp/{{ inventory_hostname }}.*"
-#  register: files_to_be_downloaded
-#  delegate_to: "{{ icinga2_master_inventory_hostname }}"
-#  when: icinga2_client_configured == False
-#  tags: ['configure-client']
-
-#- name: Download certificates from Icinga master node
-#  fetch:
-#    src: "{{item}}"
-#    dest: "/tmp/ansible/{{ inventory_hostname }}/icinga/"   
-#    flat: yes
-#  with_items: "{{ files_to_be_downloaded.stdout_lines }}" 
-#  delegate_to: "{{ icinga2_master_inventory_hostname }}"
-#  when: icinga2_client_configured == False
-#  tags: ['configure-client']
-
-#- name: Delete temporary files from Icinga master node
-#  file:
-#    path: "/tmp/{{ inventory_hostname }}.*"
-#    state: absent
-#  delegate_to: "{{ icinga2_master_inventory_hostname }}"
-#  when: icinga2_client_configured == False
-#  tags: ['configure-client']
-
 - name: Copy CA and certs to client node
   copy:
     src: "{{ item }}"
@@ -110,14 +47,6 @@
   when: icinga2_client_configured == False
   tags: ['configure-client']
       
-#- name: Delete temporary files from Ansible host
-#  local_action:
-#    module: file
-#    path: "/tmp/ansible/{{ inventory_hostname }}"
-#    state: absent
-#  when: icinga2_client_configured == False
-#  tags: ['configure-client']
-
 - name: Configure Icinga API on satellite
   template:
     src: client-api.conf.j2
@@ -148,27 +77,6 @@
     group: root
     mode: 0644
   tags: ['configure-client']
-
-#- name: Configure the client file on Icinga master server
-#  vars:
-#    client_ip_address: "{{ ansible_default_ipv4.address }}"
-#    client_os: "{{ ansible_system }}"
-#    client_distro: "{{ ansible_distribution }}"
-#  template:
-#    src: client-host.conf.j2
-#    dest: "{{ config_root_dir }}/zones.d/{{ icinga2_master_host }}/{{ inventory_hostname }}.conf"
-#    owner: root
-#    group: root
-#    mode: 0644
-#  delegate_to: "{{ icinga2_master_inventory_hostname }}"
-#  notify: Reload Icinga on master server
-#  tags: ['configure-client']
-
-#- name: Reload Icinga on master server
-#  service:
-#    name: icinga2
-#    state: reloaded
-#  delegate_to: "{{ icinga2_master_inventory_hostname }}"
 
 - name: Create the client configuration state file
   file:

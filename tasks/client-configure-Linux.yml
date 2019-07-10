@@ -20,11 +20,11 @@
 #  when: icinga2_client_file.stat.exists == True
 #  tags: ['configure-client']
 
-- name: Check if satellite is already configured on Icinga server
-  stat:
-    path: /root/.icinga2_client_configured
-  register: icinga2_client_file
-  tags: ['configure-client']
+#- name: Check if satellite is already configured on Icinga server
+#  stat:
+#    path: /root/.icinga2_client_configured
+#  register: icinga2_client_file
+#  tags: ['configure-client']
 
 - set_fact:
     icinga2_client_configured: true

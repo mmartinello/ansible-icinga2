@@ -1,9 +1,4 @@
 ---
-- set_fact:
-    icinga2_client_configured: true
-  when: icinga2_client_file.stat.exists == True
-  tags: ['configure-client']
-
 - name: Check if satellite is already configured on Icinga server
   stat:
     path: /root/.icinga2_client_configured
@@ -25,7 +20,7 @@
   tags: ['configure-client']
 
 - name: Generate a new key and CSR for new satellite on icinga server
-  shell: cd /tmp && icinga2 pki new-cert --cn {{ inventory_hostname }} --key /tmp/{{ inventory_hostname }}.key --csr /tmp/{{ inventory_hostname 
+  shell: cd /tmp && icinga2 pki new-cert --cn {{ inventory_hostname }} --key /tmp/{{ inventory_hostname }}.key --csr /tmp/{{ inventory_hostname }}.csr
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
   when: icinga2_client_configured == False
   tags: ['configure-client']

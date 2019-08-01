@@ -1,5 +1,5 @@
 object CheckCommand "check_flexicapture" {
-        command = [ PluginDir + "/check_flexicapture.exe", "$check_flexicapture_service$"]
+        command = [ CustomPluginsDir + "/check_flexicapture.exe", "$check_flexicapture_service$"]
 
         arguments = {
 				"--expect" = {

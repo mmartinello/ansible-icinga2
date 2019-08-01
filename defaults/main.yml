@@ -24,6 +24,7 @@ icinga2_api_accept_commands: false
 icinga2_api_ticket_salt: 'Change me'
 icinga2_user: nagios
 icinga2_group: nagios
+icinga2_api_port: 5665
 
 # Configuration
 config_root_dir: '/etc/icinga2'
@@ -36,10 +37,15 @@ hosts_confs_dir: '' # FIXME: da verificare, vorrei fosse null
 main_config_file: 'icinga2.conf'
 constants_config_file: 'constants.conf'
 win_client_certs_dir: 'C:\ProgramData\icinga2\var\lib\icinga2\certs'
+confd_dir_included: true
 
 services_config_files:
   - { src: 'services.conf.j2', dest: 'services.conf' }
   - { src: 'services-windows.conf.j2', dest: 'services-windows.conf' }
+
+command_config_files:
+  - { src: 'custom-command-plugins.conf.j2', dest: 'custom-command-plugins.conf' }
+  - { src: 'custom-command-plugins-windows.conf.j2', dest: 'custom-command-plugins-windows.conf' }
 
 default_unnecessary_config_files:
   - /etc/icinga2/conf.d/services.conf
@@ -48,6 +54,7 @@ default_unnecessary_config_files:
 # Client configuration
 icinga2_client_configured: false  
 icinga2_client_reinstall: false
+icinga2_host_template: 'generic-host'
 
 # Monitoring plugins
 debian_monitoring_plugins:
@@ -59,6 +66,7 @@ debian_monitoring_plugins:
   - nagios-nrpe-plugin
   - libmonitoring-plugin-perl
   - libjson-perl
+  - libdbd-sybase-perl
 
 centos_monitoring_plugins:
   - nagios-plugins-all
@@ -126,7 +134,8 @@ icingaweb2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DRO
 plugins_install: true
 plugins_src_dir: 'files/icinga-plugins'
 plugins_dest_dir: '/opt/icinga-plugins'
-win_plugin_dest_dir: 'C:\Program Files\ICINGA2\sbin'
+win_plugins_dest_dir: 'C:\Program Files\ICINGA2\custom-plugins' # Must stay into C:\Program Files\ICINGA2!
+win_plugins_dest_dir_name: 'custom-plugins' # Path without root directory
 plugins_custom_dir_var_name: 'CustomPluginsDir'
 
 

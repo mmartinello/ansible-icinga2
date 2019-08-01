@@ -1,15 +1,11 @@
 ---
-- name: Check if satellite is already configured on Icinga server
-  stat:
-    path: /root/.icinga2_client_configured
-  register: icinga2_client_file
+# Check client state file
+
+- include_tasks: client-check-Linux.yml
   when: ansible_system == "Linux"
   tags: ['configure-client']
 
-- name: Check if satellite is already configured on Icinga server
-  win_stat:
-    path: path: "{{ win_config_root_dir }}\.icinga2_client_configured"
-  register: icinga2_client_file
+- include_tasks: client-check-Windows.yml
   when: ansible_os_family == "Windows"
   tags: ['configure-client']
 
@@ -18,15 +14,20 @@
   when: icinga2_client_file.stat.exists == True and icinga2_client_reinstall == False
   tags: ['configure-client']
 
+
+# Client registration on master if not registered
+
 - name: Generate a new key and CSR for new satellite on icinga server
   shell: cd /tmp && icinga2 pki new-cert --cn {{ inventory_hostname }} --key /tmp/{{ inventory_hostname }}.key --csr /tmp/{{ inventory_hostname }}.csr
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
+  become: true
   when: icinga2_client_configured == False
   tags: ['configure-client']
 
 - name: Sign the certificate with the master CA certificate on the master node
   shell: icinga2 pki sign-csr --csr /tmp/{{ inventory_hostname }}.csr --cert /tmp/{{ inventory_hostname }}.crt
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
+  become: true
   when: icinga2_client_configured == False
   tags: ['configure-client']
 
@@ -36,6 +37,7 @@
     dest: "/tmp/ansible/{{ inventory_hostname }}/icinga/ca.crt"
     flat: yes
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
+  become: true
   when: icinga2_client_configured == False
   tags: ['configure-client']
 
@@ -43,6 +45,7 @@
   shell: "ls /tmp/{{ inventory_hostname }}.*"
   register: files_to_be_downloaded
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
+  become: true
   when: icinga2_client_configured == False
   tags: ['configure-client']
 
@@ -53,6 +56,7 @@
     flat: yes
   with_items: "{{ files_to_be_downloaded.stdout_lines }}" 
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
+  become: true
   when: icinga2_client_configured == False
   tags: ['configure-client']
 
@@ -61,9 +65,13 @@
     path: "/tmp/{{ inventory_hostname }}.*"
     state: absent
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
+  become: true
   when: icinga2_client_configured == False
   tags: ['configure-client']
-  
+
+
+# Configure client on Linux and Windows
+
 - include_tasks: client-configure-Linux.yml
   when: ansible_system == "Linux"
   tags: ['configure-client']
@@ -71,6 +79,9 @@
 - include_tasks: client-configure-Windows.yml
   when: ansible_os_family == "Windows"
   tags: ['configure-client']
+
+
+# Delete temp files, configure client on master and set client state file
 
 - name: Delete temporary files from Ansible host
   local_action:
@@ -82,8 +93,6 @@
 
 - name: Configure the client file on Icinga master server
   vars:
-    client_ip_address: "{{ ansible_default_ipv4.address }}"
-    client_os: "{{ ansible_system }}"
     client_distro: "{{ ansible_distribution }}"
   template:
     src: client-host.conf.j2
@@ -92,8 +101,9 @@
     group: root
     mode: 0644
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
+  become: true
   notify: Reload Icinga on master server
-  tags: ['configure-client']
+  tags: ['configure-client', 'client-conf']
 
 - name: Create the client configuration state file
   file:
@@ -104,7 +114,7 @@
 
 - name: Create the client configuration state file
   win_file:
-    path: "{{ win_config_root_dir }}\.icinga2_client_configured"
+    path: "{{ win_config_root_dir }}\\.icinga2_client_configured"
     state: touch
   when: icinga2_client_configured == False and ansible_os_family == "Windows"
   tags: ['configure-client']

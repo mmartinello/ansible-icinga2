@@ -1,8 +1,14 @@
 ---
+- name: Ensure Icinga Custom Plugins directory exists
+  win_file:
+    path: "{{ win_plugins_dest_dir }}"
+    state: directory
+  tags: ['plugins']
+
 - name: Deploy Icinga Custom Plugins
   win_copy:
     src: "{{ item }}"
-    dest: "{{ win_plugins_dest_dir }}"
+    dest: "{{ win_plugins_dest_dir }}\\"
   with_fileglob:
     - "files/icinga2-custom-plugins-windows/*"
   when: plugins_install == true
@@ -10,31 +16,34 @@
 
 - name: Ensure that CustomPluginsDir constant is defined
   win_lineinfile:
-    path: "{{ win_config_root_dir }}/{{ constants_config_file }}"
-    line: "const CustomPluginsDir = \"{{ plugins_dest_dir }}\""
+    path: '{{ win_config_root_dir }}/{{ constants_config_file }}'
+    regexp: '^(\/\/)?\s*const CustomPluginsDir = PrefixDir \+ "\/{{ win_plugins_dest_dir_name }}"'
+    line: 'const CustomPluginsDir = PrefixDir + "/{{ win_plugins_dest_dir_name }}"'
   when: plugins_install == true
+  notify: Restart Icinga2 on Windows
   tags: ['plugins']
 
-- name: Deploy Icinga Plugins configuration file
-  win_template:
-    src: templates/command-plugins.conf.j2
-    dest: "{{ win_config_root_dir }}/{{ custom_confd_dir }}/command-plugins.conf"
-  when: plugins_install == true
-  tags: ['plugins']
-  notify: Restart Icinga2 on Windows
+#- name: Deploy Icinga Plugins configuration file
+#  win_template:
+#    src: templates/command-plugins.conf.j2
+#    dest: "{{ win_config_root_dir }}/{{ custom_confd_dir }}/command-plugins.conf"
+#  when: plugins_install == true
+#  notify: Restart Icinga2 on Windows
+#  tags: ['plugins']
 
 - name: Deploy Icinga Custom Plugins configuration file
   win_template:
-    src: templates/custom-command-plugins.conf.j2
-    dest: "{{ win_config_root_dir }}/{{ custom_confd_dir }}/custom-command-plugins.conf"
+    src: templates/custom-command-plugins-windows.conf.j2
+    dest: "{{ win_config_root_dir }}/{{ custom_confd_dir }}/custom-command-plugins-windows.conf"
   when: plugins_install == true
-  tags: ['plugins']
   notify: Restart Icinga2 on Windows
+  tags: ['plugins']
 
-- name: Deploy services configuration files
-  win_template:
-    src: "{{ item.src }}"
-    dest: "{{ win_config_root_dir }}/{{ services_dir }}/{{ item.dest }}"
-  with_items: "{{ services_config_files }}"
-  tags: ['plugins']
-  notify: Restart Icinga2 on Windows
+# Disabled on Windows
+#- name: Deploy services configuration files
+#  win_template:
+#    src: "{{ item.src }}"
+#    dest: "{{ win_config_root_dir }}/{{ services_dir }}/{{ item.dest }}"
+#  with_items: "{{ services_config_files }}"
+#  notify: Restart Icinga2 on Windows
+#  tags: ['plugins']

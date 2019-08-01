@@ -20,9 +20,9 @@
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
   with_items:
-    - { regexp: '^(\/\/)?const NodeName', line: 'const NodeName = "{{ inventory_hostname }}"' }
-    - { regexp: '^(\/\/)?const ZoneName', line: 'const ZoneName = "{{ inventory_hostname }}"' }
-    - { regexp: '^(\/\/)?const {{ plugins_custom_dir_var_name }} =(.+)', line: 'const {{ plugins_custom_dir_var_name }} = "{{ plugins_dest_dir }}"' }
+    - { regexp: '^(\/\/)?\s*const NodeName', line: 'const NodeName = "{{ inventory_hostname }}"' }
+    - { regexp: '^(\/\/)?\s*const ZoneName', line: 'const ZoneName = "{{ inventory_hostname }}"' }
+    - { regexp: '^(\/\/)?\s*const {{ plugins_custom_dir_var_name }} =(.+)', line: 'const {{ plugins_custom_dir_var_name }} = "{{ plugins_dest_dir }}"' }
   tags: ['configure-client']
 
 - name: Setup Icinga zones

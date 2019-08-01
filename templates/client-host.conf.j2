@@ -8,7 +8,11 @@ object Endpoint "{{ inventory_hostname }}" {
 }
 
 object Host "{{ inventory_hostname }}" {
+{% if icinga2_host_template is defined and icinga2_host_template != "" %}
+  import "{{ icinga2_host_template }}"
+{% else %}
   import "generic-host"
+{% endif %}
   address = "{{ client_ip_address }}"
 
   vars.os = "{{ client_os }}"
@@ -17,9 +21,12 @@ object Host "{{ inventory_hostname }}" {
   vars.vm_type = "{{ vm_type }}"
 {% endif %}
 
+{% if client_os != "Windows" %}
   vars.disks["disk"] = {
     disk_all = true
+    disk_local = true
   }
+{% endif %}
 
   vars.notification["mail"] = {
     groups = [ "icingaadmins" ]
@@ -29,14 +36,18 @@ object Host "{{ inventory_hostname }}" {
 
   # Host Variables
 {% set host_vars = client_vars | default([]) %}
-{% for var_name, var_content in host_vars.items() %}
-{% for item in var_content %}
-  vars.{{ var_name }}["{{ item.name }}"] = {
-{% for param_name, param_value in item.params.items() %}
+{% for var_group_name, var_group_content in host_vars.items() %}
+{% if var_group_content is mapping %}
+{% for var_name, variables in var_group_content.items() %}
+  vars.{{ var_group_name }}["{{ var_name }}"] = {
+{% for param_name, param_value in variables.items() %}
     {{ param_name }} = "{{ param_value }}"
 {% endfor %}
-  }
-{% endfor %}    
+}
+{% endfor %}
+{% else %}
+  vars.{{ var_group_name }} = "{{ var_group_content }}"
+{% endif %}
 {%- endfor %}
   # End Host Variables
 }

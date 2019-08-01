@@ -16,24 +16,26 @@
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
   with_items:
-    - { regexp: '^(\/\/)?const NodeName', line: 'const NodeName = "{{ inventory_hostname }}"' }
-    - { regexp: '^(\/\/)?const ZoneName', line: 'const ZoneName = "{{ inventory_hostname }}"' }
-    - { regexp: '^(\/\/)?const {{ plugins_custom_dir_var_name }} =(.+)', line: 'const {{ plugins_custom_dir_var_name }} = "{{ win_plugin_dest_dir }}"' }
+    - { regexp: '^(\/\/)?\s*const NodeName', line: 'const NodeName = "{{ inventory_hostname }}"' }
+    - { regexp: '^(\/\/)?\s*const ZoneName', line: 'const ZoneName = "{{ inventory_hostname }}"' }
+  notify: Restart Icinga2 on Windows
   tags: ['configure-client']
 
 - name: Setup Icinga zones
   win_template:
     src: ../templates/client-zones.conf.j2
     dest: "{{ win_config_root_dir }}/zones.conf"
+  notify: Restart Icinga2 on Windows
   tags: ['configure-client']
     
 - name: Copy CA and certs to client node
   win_copy:
     src: "{{ item }}"
-    dest: "{{ win_client_certs_dir }}"\
+    dest: "{{ win_client_certs_dir }}\\"
   with_fileglob:
     - "/tmp/ansible/{{ inventory_hostname }}/icinga/*"
   when: icinga2_client_configured == False
+  notify: Restart Icinga2 on Windows
   tags: ['configure-client']
       
 - name: Configure Icinga API on satellite
@@ -43,19 +45,33 @@
     owner: root
     group: root
     mode: 0644
+  notify: Restart Icinga2 on Windows
   tags: ['configure-client']
 
 - name: Enable Icinga API on satellite
   win_lineinfile:
     path: "{{ win_config_root_dir }}/features-enabled/api.conf"
-    regexp: '^(\/\/)?include "../features-available/api.conf"'
+    regexp: '^(\/\/)?\s*include "../features-available/api.conf"'
     line: 'include "../features-available/api.conf"'
+  notify: Restart Icinga2 on Windows
+  tags: ['configure-client']
+  
+- name: Add a Windows Firewall rule for Icinga API
+  win_firewall_rule:
+    name: Icinga2 API
+    localport: "{{ icinga2_api_port }}"
+    action: allow
+    direction: in
+    protocol: tcp
+    state: present
+    enabled: yes
   tags: ['configure-client']
 
 - name: Disable Icinga notifier on satellite
   win_file:
     path: "{{ win_config_root_dir }}/features-enabled/notification.conf"
     state: absent
+  notify: Restart Icinga2 on Windows
   tags: ['configure-client']
 
 - name: Configure Icinga checker on satellite
@@ -65,4 +81,5 @@
     owner: root
     group: root
     mode: 0644
+  notify: Restart Icinga2 on Windows
   tags: ['configure-client']

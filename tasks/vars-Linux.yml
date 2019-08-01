@@ -1,0 +1,12 @@
+---
+- name: Get default IP address
+  set_fact:
+    client_ip_address: "{{ ansible_default_ipv4.address }}"
+  when: ansible_system == "Linux"
+  tags: ['always']
+
+- name: Get host variables
+  set_fact:
+    client_os: "{{ ansible_system }}"
+  when: ansible_system == "Linux"
+  tags: ['always']

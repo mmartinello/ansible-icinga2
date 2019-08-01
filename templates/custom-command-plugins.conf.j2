@@ -744,4 +744,30 @@ object CheckCommand "check_cpu" {
                         description = "generate performance stats in cpu-ticks (jiffies), instead of percent"
                 }
         }
+
+bject CheckCommand "check_video" {
+        command = [ {{ plugins_custom_dir_var_name }} + "/check_video.py" ]
+
+        arguments = {
+                "-r" = {
+                        value = "$video_url$"
+                        description = "URL"
+                }
+                "-vw" = {
+                        value = "$video_width$"
+                        description = "Expected Width"
+                }
+                "-vh" = {
+                        value = "$video_height$"
+                        description = "Expected Height"
+                }
+                "-i" = {
+                        value = "$video_streamindex$"
+                        description = "ffmpeg stream index"
+                }
+                "-s" = {
+                        value = "$video_probesize$"
+                        description = "Size of video snippet"
+                }
+	}
 }

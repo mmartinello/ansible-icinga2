@@ -15,3 +15,11 @@
     debian_monitoring_plugins: "{{ (debian_monitoring_plugins | difference(['libmonitoring-plugin-perl'])) + ['libnagios-plugin-perl'] }}"
   when: ansible_distribution|lower == "debian" and ansible_distribution_release|lower == "jessie"
   tags: ['always']
+
+- include_tasks: vars-Linux.yml
+  when: ansible_system == "Linux"
+  tags: ['always']
+
+- include_tasks: vars-Windows.yml
+  when: ansible_os_family == "Windows"
+  tags: ['always']

@@ -425,3 +425,9 @@ apply Service "CPU usage" {
     command_endpoint = host.vars.client_endpoint
   }
 }
+
+apply Service for (video => config in host.vars.video) {
+  import "generic-service"
+  check_command = "check_video"
+  vars += config
+}

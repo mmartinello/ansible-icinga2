@@ -1,0 +1,58 @@
+---
+# conf.d directories
+- name: Ensure config files are not recursively included from conf.d dir
+  win_lineinfile:
+    path: "{{ win_config_root_dir }}/{{ main_config_file }}"
+    regexp: '^(\/\/)?\s*include_recursive "{{ confd_dir }}"'
+    line: '//include_recursive "{{ confd_dir }}"'
+    state: present
+  notify: Restart Icinga2 on Windows
+  tags: ['install-icinga2-stack', 'config']
+    
+- name: Ensure custom conf.d directory is present
+  win_file:
+    path: "{{ win_config_root_dir }}/{{ custom_confd_dir }}"
+    state: directory
+  notify: Restart Icinga2 on Windows
+  tags: ['install-icinga2-stack', 'config']
+
+- name: Ensure config files are recursively included from custom conf.d dir
+  win_lineinfile:
+    path: "{{ win_config_root_dir }}/{{ main_config_file }}"
+    line: "include_recursive \"{{ custom_confd_dir }}\""
+    state: present
+  notify: Restart Icinga2 on Windows
+  tags: ['install-icinga2-stack', 'config']
+
+
+# Deploy services configurations
+
+#- name: Ensure services.d directory is present
+#  win_file:
+#    path: "{{ win_config_root_dir }}/{{ services_dir }}"
+#    state: directory
+#  notify: Restart Icinga2 on Windows
+#  tags: ['install-icinga2-stack', 'config']
+  
+#- name: Ensure config files are recursively included from services dir
+#  win_lineinfile:
+#    path: "{{ win_config_root_dir }}/{{ main_config_file }}"
+#    line: "include_recursive \"{{ services_dir }}\""
+#    state: present
+#  notify: Restart Icinga2 on Windows
+#  tags: ['install-icinga2-stack', 'config']
+  
+#- name: Remove default unnecessary config files
+#  win_file:
+#    path: "{{ item }}"
+#    state: absent
+#  with_items: "{{ default_unnecessary_config_files }}"
+#  tags: ['install-icinga2-stack', 'config']
+
+
+# Reload Icinga2
+
+#- name: Restart Icinga2
+#  local_action: command /bin/true
+#  notify: Restart Icinga2 on Windows
+#  tags: ['install-icinga2-stack', 'config']

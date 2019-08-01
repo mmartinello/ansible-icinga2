@@ -1,0 +1,93 @@
+---
+# conf.d and custom conf.d directories
+
+- name: Ensure conf.d directory is present
+  file:
+    path: "{{ config_root_dir }}/{{ confd_dir }}"
+    state: directory
+  when: confd_dir_included == True
+  notify: Reload Icinga2
+  tags: ['install-icinga2-stack', 'config']
+
+- name: Ensure config files are recursively included from conf.d dir
+  lineinfile:
+    path: "{{ config_root_dir }}/{{ main_config_file }}"
+    regexp: '^(\/\/)?\s*include_recursive "{{ confd_dir }}"'
+    line: 'include_recursive "{{ confd_dir }}"'
+    state: present
+  when: confd_dir_included == True
+  notify: Reload Icinga2
+  tags: ['install-icinga2-stack', 'config']
+  
+- name: Ensure config files are not recursively included from conf.d dir
+  lineinfile:
+    path: "{{ config_root_dir }}/{{ main_config_file }}"
+    regexp: '^(\/\/)?\s*include_recursive "{{ confd_dir }}"'
+    line: '//include_recursive "{{ confd_dir }}"'
+    state: present
+  when: confd_dir_included == False
+  notify: Reload Icinga2
+  tags: ['install-icinga2-stack', 'config']
+
+- name: Ensure custom conf.d directory is present
+  file:
+    path: "{{ config_root_dir }}/{{ custom_confd_dir }}"
+    state: directory
+#  when: confd_dir_included == True
+  notify: Reload Icinga2
+  tags: ['install-icinga2-stack', 'config']
+
+- name: Ensure config files are recursively included from conf.d dir
+  lineinfile:
+    path: "{{ config_root_dir }}/{{ main_config_file }}"
+    line: "include_recursive \"{{ custom_confd_dir }}\""
+    state: present
+#  when: confd_dir_included == True
+  notify: Reload Icinga2
+  tags: ['install-icinga2-stack', 'config']
+  
+#- name: Ensure config files are not recursively included from conf.d dir
+#  lineinfile:
+#    path: "{{ config_root_dir }}/{{ main_config_file }}"
+#    line: "include_recursive \"{{ custom_confd_dir }}\""
+#    state: absent
+#  when: confd_dir_included == False
+#  notify: Reload Icinga2
+#  tags: ['install-icinga2-stack', 'config']
+
+
+# Deploy services configurations
+
+- name: Ensure services.d directory is present
+  file:
+    path: "{{ config_root_dir }}/{{ services_dir }}"
+    state: directory
+#  when: confd_dir_included == True
+  notify: Reload Icinga2
+  tags: ['install-icinga2-stack', 'config']
+  
+- name: Ensure config files are recursively included from services dir
+  lineinfile:
+    path: "{{ config_root_dir }}/{{ main_config_file }}"
+    line: "include_recursive \"{{ services_dir }}\""
+    state: present
+#  when: confd_dir_included == True
+  notify: Reload Icinga2
+  tags: ['install-icinga2-stack', 'config']
+
+#- name: Ensure config files are not recursively included from services dir
+#  lineinfile:
+#    path: "{{ config_root_dir }}/{{ main_config_file }}"
+#    line: "include_recursive \"{{ services_dir }}\""
+#    state: absent
+#  when: confd_dir_included == False
+#  notify: Reload Icinga2
+#  tags: ['install-icinga2-stack', 'config']
+  
+- name: Remove default unnecessary config files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: "{{ default_unnecessary_config_files }}"
+  notify: Reload Icinga2
+  tags: ['install-icinga2-stack', 'config']

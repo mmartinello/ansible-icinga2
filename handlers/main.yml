@@ -34,6 +34,7 @@
     name: icinga2
     state: reloaded
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
+  become: true
 
 - name: Restart Icinga2 on Windows
   win_service:

@@ -1,0 +1,12 @@
+---
+- name: Get default IP address
+  set_fact:
+    client_ip_address: "{{ ansible_ip_addresses[0] }}"
+  when: ansible_os_family == "Windows"
+  tags: ['always']
+
+- name: Get host variables
+  set_fact:
+    client_os: "{{ ansible_os_family }}"
+  when: ansible_os_family == "Windows"
+  tags: ['always']

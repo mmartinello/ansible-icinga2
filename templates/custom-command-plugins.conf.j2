@@ -744,6 +744,7 @@ object CheckCommand "check_cpu" {
                         description = "generate performance stats in cpu-ticks (jiffies), instead of percent"
                 }
         }
+}
 
 object CheckCommand "check_video" {
         command = [ {{ plugins_custom_dir_var_name }} + "/check_video.py" ]

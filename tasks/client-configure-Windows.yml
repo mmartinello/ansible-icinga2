@@ -50,9 +50,11 @@
 
 - name: Enable Icinga API on satellite
   win_lineinfile:
-    path: "{{ win_config_root_dir }}/features-enabled/api.conf"
+    path: "{{ win_config_root_dir }}\\features-enabled\\api.conf"
     regexp: '^(\/\/)?\s*include "../features-available/api.conf"'
     line: 'include "../features-available/api.conf"'
+    state: present
+    create: yes
   notify: Restart Icinga2 on Windows
   tags: ['configure-client']
   

@@ -22,7 +22,7 @@
 
 - name: Deploy Icinga Custom Plugins
   synchronize:
-    src: "files/icinga2-custom-plugins/"
+    src: "{{ plugins_src_dir }}"
     dest: "{{ plugins_dest_dir }}"
     delete: yes
     recursive: yes

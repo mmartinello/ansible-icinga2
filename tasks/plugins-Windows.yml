@@ -10,7 +10,7 @@
     src: "{{ item }}"
     dest: "{{ win_plugins_dest_dir }}\\"
   with_fileglob:
-    - "files/icinga2-custom-plugins-windows/*"
+    - "{{ win_plugins_src_dir }}/*"
   when: plugins_install == true
   tags: ['plugins']
 

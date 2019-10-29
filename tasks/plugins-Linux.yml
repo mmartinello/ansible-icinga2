@@ -33,6 +33,7 @@
   file:
     path: /etc/sudoers.d/zzz-ansible-temp
     state: absent
+    mode: 0440
   when: plugins_install == true
   tags: ['plugins']
 

@@ -25,7 +25,7 @@
 
 - name: Deploy Icinga Custom Plugins configuration file
   win_template:
-    src: {{ win_plugins_conf_src_template }}
+    src: "{{ win_plugins_conf_src_template }}"
     dest: "{{ win_config_root_dir }}/{{ custom_confd_dir }}/custom-command-plugins-windows.conf"
   when: plugins_install == true
   notify: Restart Icinga2 on Windows

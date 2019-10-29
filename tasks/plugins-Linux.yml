@@ -45,7 +45,7 @@
 
 - name: Deploy Icinga Plugins configuration file
   template:
-    src: {{ plugins_conf_src_template }}
+    src: "templates/command-plugins.conf.j2"
     dest: "{{ config_root_dir }}/{{ custom_confd_dir }}/command-plugins.conf"
   when: plugins_install == true
   tags: ['plugins']
@@ -53,9 +53,8 @@
 
 - name: Deploy Icinga Custom Plugins configuration file
   template:
-    src: "{{ item.src }}"
-    dest: "{{ config_root_dir }}/{{ custom_confd_dir }}/{{ item.dest }}"
-  with_items: "{{ command_config_files }}"
+    src: "{{ plugins_conf_src_template }}"
+    dest: "{{ config_root_dir }}/{{ custom_confd_dir }}/custom-command-plugins.conf"
   tags: ['plugins']
   notify: Reload Icinga2
 

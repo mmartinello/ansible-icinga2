@@ -41,10 +41,6 @@ services_config_files:
   - { src: 'services.conf.j2', dest: 'services.conf' }
   - { src: 'services-windows.conf.j2', dest: 'services-windows.conf' }
 
-command_config_files:
-  - { src: 'custom-command-plugins.conf.j2', dest: 'custom-command-plugins.conf' }
-  - { src: 'custom-command-plugins-windows.conf.j2', dest: 'custom-command-plugins-windows.conf' }
-
 default_unnecessary_config_files:
   - /etc/icinga2/conf.d/services.conf
   - /etc/icinga2/conf.d/apt.conf

@@ -12,6 +12,7 @@
     path: /etc/sudoers.d/zzz-ansible-temp
     state: present
     create: yes
+    mode: 0440
     marker: "\n# ----- {mark} ANSIBLE MANAGED BLOCK -----\n"
     block: |
 
@@ -33,7 +34,6 @@
   file:
     path: /etc/sudoers.d/zzz-ansible-temp
     state: absent
-    mode: 0440
   when: plugins_install == true
   tags: ['plugins']
 

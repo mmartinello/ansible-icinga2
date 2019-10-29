@@ -132,9 +132,11 @@ icingaweb2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DRO
 plugins_install: true
 plugins_src_dir: 'files/icinga2-custom-plugins'
 plugins_dest_dir: '/opt/icinga-plugins'
+plugins_conf_src_template: 'templates/command-plugins.conf.j2'
 win_plugins_src_dir: 'files/icinga2-custom-plugins-windows'
 win_plugins_dest_dir: 'C:\Program Files\ICINGA2\custom-plugins' # Must stay into C:\Program Files\ICINGA2!
 win_plugins_dest_dir_name: 'custom-plugins' # Path without root directory
+win_plugins_conf_src_template: templates/custom-command-plugins-windows.conf.j2
 plugins_custom_dir_var_name: 'CustomPluginsDir'
 
 

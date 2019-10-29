@@ -23,17 +23,9 @@
   notify: Restart Icinga2 on Windows
   tags: ['plugins']
 
-#- name: Deploy Icinga Plugins configuration file
-#  win_template:
-#    src: templates/command-plugins.conf.j2
-#    dest: "{{ win_config_root_dir }}/{{ custom_confd_dir }}/command-plugins.conf"
-#  when: plugins_install == true
-#  notify: Restart Icinga2 on Windows
-#  tags: ['plugins']
-
 - name: Deploy Icinga Custom Plugins configuration file
   win_template:
-    src: templates/custom-command-plugins-windows.conf.j2
+    src: {{ win_plugins_conf_src_template }}
     dest: "{{ win_config_root_dir }}/{{ custom_confd_dir }}/custom-command-plugins-windows.conf"
   when: plugins_install == true
   notify: Restart Icinga2 on Windows

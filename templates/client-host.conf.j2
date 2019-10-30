@@ -35,7 +35,7 @@ object Host "{{ inventory_hostname }}" {
   vars.client_endpoint = name
 
   # Host Variables
-{% set host_vars = client_vars | default([]) %}
+{% set host_vars = icinga2_client_vars | default([]) %}
 {% for var_group_name, var_group_content in host_vars.items() %}
 {% if var_group_content is mapping %}
 {% for var_name, variables in var_group_content.items() %}

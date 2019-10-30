@@ -17,6 +17,7 @@
   tags: ['install-icinga2-stack']
 
 - include_tasks: client-configure.yml
+  when: icinga2_client_configure == true
   tags: ['configure-client']
 
 - name: Restart Icinga 2

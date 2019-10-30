@@ -46,6 +46,7 @@ default_unnecessary_config_files:
   - /etc/icinga2/conf.d/apt.conf
 
 # Client configuration
+icinga2_client_configure: false
 icinga2_client_configured: false  
 icinga2_client_reinstall: false
 icinga2_host_template: 'generic-host'

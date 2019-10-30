@@ -148,40 +148,12 @@ apply Service for (ftp => config in host.vars.ftp) {
   vars += config
 }
 
-apply Service "System Memory" {
-  import "generic-service"
-
-  # check_command = "memory"
-  check_command = "check_mem"
-
-  assign where (host.vars.os == "Linux" || host.vars.os == "FreeBSD") && !host.vars.nrpe
-
-  max_check_attempts = 120
-  retry_interval = 1m
-
-  if (host.vars.client_endpoint) {
-    command_endpoint = host.vars.client_endpoint
-  }
-}
-
 apply Service "System Uptime" {
   import "generic-service"
 
   check_command = "uptime"
 
   assign where (host.vars.os == "Linux" || host.vars.os == "FreeBSD") && !host.vars.nrpe
-
-  if (host.vars.client_endpoint) {
-    command_endpoint = host.vars.client_endpoint
-  }
-}
-
-apply Service for (files => config in host.vars.check_files) {
-  import "generic-service"
-
-  check_command = "check_files"
-
-  vars += config
 
   if (host.vars.client_endpoint) {
     command_endpoint = host.vars.client_endpoint
@@ -196,18 +168,6 @@ apply Service for (tcp => config in host.vars.tcp) {
   vars += config
 
   if (host.vars.client_endpoint && config.command_endpoint != "local") {
-    command_endpoint = host.vars.client_endpoint
-  }
-}
-
-apply Service for (smart => config in host.vars.smart) {
-  import "generic-service"
-
-  check_command = "check_smart"
-
-  vars += config
-
-  if (host.vars.client_endpoint) {
     command_endpoint = host.vars.client_endpoint
   }
 }
@@ -279,40 +239,10 @@ apply Service for (simap => config in host.vars.simap) {
   vars += config
 }
 
-apply Service "Mount Points" {
-  import "generic-service"
-
-  check_command = "check_mountpoints"
-
-  assign where host.vars.os == "Linux" && host.vars.check_mountpoints != false
-
-  if (host.vars.client_endpoint) {
-    command_endpoint = host.vars.client_endpoint
-  }
-}
-
 apply Service for (mysql => config in host.vars.mysql) {
   import "generic-service"
   check_command = "mysql"
   vars += config
-}
-
-apply Service for (mysql_slave => config in host.vars.mysql_slave) {
-  import "generic-service"
-  check_command = "check_mysql_slavestatus"
-  vars += config
-}
-
-apply Service "Running Kernel" {
-  import "generic-service"
-
-  check_command = "check_kernel"
-
-  assign where host.vars.os == "Linux" && host.vars.check_kernel != false && host.vars.vm_type != "lxc" && host.vars.vm_type != "openvz"
-
-  if (host.vars.client_endpoint) {
-    command_endpoint = host.vars.client_endpoint
-  }
 }
 
 apply Service "APT Packages Updates" {
@@ -327,36 +257,10 @@ apply Service "APT Packages Updates" {
   }
 }
 
-apply Service "YUM Packages Updates" {
-  import "generic-service"
-
-  check_command = "check_yum"
-
-  assign where host.vars.distro == "CentOS" || host.vars.distro == "Redhat Enterprise Linux" || host.vars.distro == "Sangoma"
-
-  vars.yum_timeout = 60
-
-  if (host.vars.client_endpoint) {
-    command_endpoint = host.vars.client_endpoint
-  }
-}
-
-apply Service for (icecast2 => config in host.vars.icecast2) {
-  import "generic-service"
-  check_command = "icecast2"
-  vars += config
-}
-
 apply Service for (dns => config in host.vars.dns) {
   import "generic-service"
   check_command = "dns"
   vars += config
-}
-
-apply Service "DNS Service" {
-  import "generic-service"
-  check_command = "dns-server"
-  assign where host.vars.is_dns
 }
 
 apply Service "NRPE Service" {
@@ -369,19 +273,6 @@ apply Service for (nrpe => config in host.vars.nrpe) {
   import "generic-service"
   check_command = "nrpe"
   vars += config
-}
-
-apply Service for (openvpn => config in host.vars.openvpn) {
-  import "generic-service"
-
-  check_command = "udp_port"
-
-  vars += config
-  vars.udp_service = "rblcheckd"
-
-  if (host.vars.client_endpoint && config.command_endpoint != "local") {
-    command_endpoint = host.vars.client_endpoint
-  }
 }
 
 apply Service "DNS Resolution" {
@@ -412,22 +303,4 @@ apply Service "Local date/time" {
   if (host.vars.client_endpoint) {
     command_endpoint = host.vars.client_endpoint
   }
-}
-
-apply Service "CPU usage" {
-  import "generic-service"
-
-  check_command = "check_cpu"
-
-  assign where host.vars.os == "Linux"
-
-  if (host.vars.client_endpoint) {
-    command_endpoint = host.vars.client_endpoint
-  }
-}
-
-apply Service for (video => config in host.vars.video) {
-  import "generic-service"
-  check_command = "check_video"
-  vars += config
 }

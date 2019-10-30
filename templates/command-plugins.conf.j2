@@ -1,5 +1,4 @@
-{% if ansible_distribution_release == "stretch" %}
-object CheckCommand "uptime" {
+object CheckCommand "_uptime" {
         command = [ PluginDir + "/check_uptime" ]
 
         arguments = {
@@ -13,9 +12,8 @@ object CheckCommand "uptime" {
                 }
         }
 }
-{% endif %}
 
-object CheckCommand "memory" {
+object CheckCommand "_memory" {
         command = [ PluginDir + "/check_memory" ]
 
         arguments = {

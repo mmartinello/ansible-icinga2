@@ -54,8 +54,9 @@
 
 - name: Deploy Icinga Custom Plugins configuration file
   template:
-    src: "{{ plugins_conf_src_template }}"
-    dest: "{{ config_root_dir }}/{{ custom_confd_dir }}/custom-command-plugins.conf"
+    src: "{{ item.src }}"
+    dest: "{{ config_root_dir }}/{{ custom_confd_dir }}/{{ item.dest }}"
+  with_items: "{{ plugins_command_files }}"
   tags: ['plugins']
   notify: Reload Icinga2
 

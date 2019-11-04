@@ -148,18 +148,6 @@ apply Service for (ftp => config in host.vars.ftp) {
   vars += config
 }
 
-apply Service "System Uptime" {
-  import "generic-service"
-
-  check_command = "uptime"
-
-  assign where (host.vars.os == "Linux" || host.vars.os == "FreeBSD") && !host.vars.nrpe
-
-  if (host.vars.client_endpoint) {
-    command_endpoint = host.vars.client_endpoint
-  }
-}
-
 apply Service for (tcp => config in host.vars.tcp) {
   import "generic-service"
 

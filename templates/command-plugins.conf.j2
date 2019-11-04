@@ -1,18 +1,3 @@
-object CheckCommand "_uptime" {
-        command = [ PluginDir + "/check_uptime" ]
-
-        arguments = {
-                "-w" = {
-                        value = "$uptime_warning$"
-                        description = "Report WARNING if system has been up for less then specified number of minutes"
-                }
-                "-c" = {
-                        value = "$uptime_critical$"
-                        description = "Report CRITICAL if system has been up for less then specified number of minutes"
-                }
-        }
-}
-
 object CheckCommand "_memory" {
         command = [ PluginDir + "/check_memory" ]
 

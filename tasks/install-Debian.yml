@@ -15,7 +15,7 @@
     repo: deb http://deb.debian.org/debian {{ ansible_distribution_release | lower }}-backports main
     state: present
     filename: debian-backports
-  when: {{ ansible_distribution_release | lower }} == "stretch"
+  when: ansible_distribution_release | lower == "stretch"
   tags: ['install-icinga2-stack', 'install-icinga2']
 
 - name: Add Icinga Repository Key

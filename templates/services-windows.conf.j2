@@ -80,6 +80,6 @@ apply Service for (service_win_service => config in host.vars.win_services) {
 
 apply Service "Remote Desktop" {
   import "generic-service"
-  check_command = "check_rdp"
+  check_command = "_check_rdp"
   assign where host.vars.os == "Windows"
 }

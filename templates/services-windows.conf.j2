@@ -83,11 +83,3 @@ apply Service "Remote Desktop" {
   check_command = "check_rdp"
   assign where host.vars.os == "Windows"
 }
-
-apply Service for (check_flexicapture => config in host.vars.check_flexicapture) {
-  import "generic-service"
-  check_command = "check_flexicapture"
-  vars += config
-  command_endpoint = host.vars.client_endpoint
-  assign where host.vars.client_endpoint && host.vars.os == "Windows"
-}

@@ -10,6 +10,14 @@
     state: present
   tags: ['install-icinga2-stack', 'install-icinga2']
 
+- name: Add Debian Backports Repository
+  apt_repository:
+    repo: deb http://deb.debian.org/debian {{ ansible_distribution_release | lower }}-backports main
+    state: present
+    filename: debian-backports
+  when: {{ ansible_distribution_release | lower }} == "stretch"
+  tags: ['install-icinga2-stack', 'install-icinga2']
+
 - name: Add Icinga Repository Key
   apt_key:
     url: https://packages.icinga.com/icinga.key

@@ -16,6 +16,12 @@
   when: ansible_distribution|lower == "debian" and ansible_distribution_release|lower == "jessie"
   tags: ['always']
 
+- name: Set Monitoring Plugins on old Ubuntu Versions
+  set_fact:
+    debian_monitoring_plugins: "{{ (debian_monitoring_plugins | difference(['libmonitoring-plugin-perl']) | difference(['monitoring-plugins-basic']) | difference(['monitoring-plugins-common']) | difference(['monitoring-plugins-standard'])) + ['libnagios-plugin-perl'] }}"
+  when: ansible_distribution|lower == "ubuntu" and ansible_distribution_release|lower == "precise"
+  tags: ['always']
+
 - include_tasks: vars-Linux.yml
   when: ansible_system == "Linux"
   tags: ['always']

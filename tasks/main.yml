@@ -10,6 +10,7 @@
   tags: ['install-icinga2-stack', 'install-icinga2-ido']  
 
 - include_tasks: configure.yml
+  when: icinga2_client_configure == false
   tags: ['install-icinga2-stack']
   
 - include_tasks: node-configure.yml

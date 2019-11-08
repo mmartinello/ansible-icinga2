@@ -6,6 +6,11 @@ object ApiListener "api" {
   accept_config = {{ icinga2_api_accept_config | lower }}
   accept_commands = {{ icinga2_api_accept_commands | lower }}
 
+  {% if ansible_distribution|lower == "ubuntu" and ansible_distribution_release|lower == "precise" %}
+  cert_path = "{{ icinga2_cert_path }}"
+  key_path = "{{ icinga2_key_path }}"
+  ca_path = "{{ icinga2_ca_path }}"
+  {% endif %}
+
   ticket_salt = TicketSalt
 }
-

@@ -23,6 +23,9 @@ icinga2_api_ticket_salt: 'Change me'
 icinga2_user: nagios
 icinga2_group: nagios
 icinga2_api_port: 5665
+icinga2_cert_path: /var/lib/icinga2/certs/{{ ansible_inventory_hostname }}.crt
+icinga2_key_path: /var/lib/icinga2/certs/{{ ansible_inventory_hostname }}.key
+icinga2_ca_path: /var/lib/icinga2/certs/ca.crt
 
 # Configuration
 config_root_dir: '/etc/icinga2'

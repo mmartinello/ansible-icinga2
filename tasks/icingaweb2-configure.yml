@@ -89,6 +89,34 @@
   when: icingaweb2_install == true and icingaweb2_admin_password_hash.stdout != "" and icingaweb2_admin_user.stdout != "0" and icingaweb2_admin_user_check_password.stdout == "0"
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
+- name: Check if admin group already exists
+  command: "mysql -Nse \"SELECT count(*) FROM icingaweb_group where name = 'Administrators'\" {{ icingaweb2_db_name }}"
+  register: icingaweb2_admin_group
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Insert the Icingaweb2 admin group
+  command: "{{ _mysql_cmd }} -Nse \"INSERT INTO icingaweb_group (name) VALUES ('Administrators');\" {{ icingaweb2_db_name }}"
+  when: icingaweb2_install == true and icingaweb2_admin_group.stdout == "0"
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Get the admin group ID
+  command: "mysql -Nse \"SELECT id FROM icingaweb_group where name = 'Administrators'\" {{ icingaweb2_db_name }}"
+  register: icingaweb2_admin_group_id
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Check if the admin username is already assigned to the admin group
+  command: "mysql -Nse \"SELECT count(*) FROM icingaweb_group_membership where group_id = '{{ icingaweb2_admin_group_id.stdout }}' AND username = '{{ icingaweb2_admin_username }}'\" {{ icingaweb2_db_name }}"
+  register: icingaweb2_admin_group_membership
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Assign the Icingaweb2 admin user to the admin group
+  command: "{{ _mysql_cmd }} -Nse \"INSERT INTO icingaweb_group_membership (group_id, username) VALUES ('{{ icingaweb2_admin_group_id.stdout }}', '{{ icingaweb2_admin_username }}');\" {{ icingaweb2_db_name }}"
+  when: icingaweb2_install == true and icingaweb2_admin_group_membership.stdout == "0"
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
 
 # Configure monitoring module
 

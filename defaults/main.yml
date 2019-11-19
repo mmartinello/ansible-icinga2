@@ -92,6 +92,7 @@ icinga2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,C
 icinga2_master_setup: false
 icinga2_node_cn: "{{ ansible_fqdn }}"
 
+
 #########################################################################
 # Icinga Web 2
 
@@ -122,6 +123,7 @@ icingaweb2_db_admin_user: null
 icingaweb2_db_admin_password: null
 icingaweb2_db_name: 'icingaweb2'
 icingaweb2_db_host: 'localhost'
+icingaweb2_db_port: 3306
 icingaweb2_db_user: 'icingaweb2'
 icingaweb2_db_password: "{{ ansible_machine_id ~ '_icingaweb2' | hash('sha1') | truncate(24, True, '') }}"
 icingaweb2_db_user_host: 'localhost'
@@ -130,6 +132,9 @@ icingaweb2_ido_db_user_host: 'localhost'
 icingaweb2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,CREATE VIEW,INDEX,EXECUTE'
 icingaweb2_db_schema_file: '/usr/share/icingaweb2/etc/schema/mysql.schema.sql'
 
+# Icinga Web 2 Users:
+icingaweb2_admin_username: admin
+icingaweb2_admin_password: "{{ ansible_machine_id ~ '_icingaweb2_admin' | hash('sha1') | truncate(24, True, '') }}"
 
 
 #########################################################################

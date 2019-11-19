@@ -1,4 +1,6 @@
 ---
+# Icingaweb2
+
 - name: Install Icinga Web 2
   apt:
     name:
@@ -7,6 +9,9 @@
     state: present
   when: icingaweb2_install == true
   tags: ['install-icingaweb2']
+
+
+# Database
 
 - name: Create Icinga Web 2 Database
   mysql_db:
@@ -37,13 +42,103 @@
     and icingaweb2_db_user_create == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
-- name: Enable icingacli setup module
-  command: icingacli module enable setup
+#- name: Enable icingacli setup module
+#  command: icingacli module enable setup
+#  when: icingaweb2_install == true
+#  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+#- name: Generate a new Icinga setup token
+#  command: icingacli setup token create
+#  register: icingacli_setup_token
+#  when: icingaweb2_install == true
+#  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Drop tables from Icingaweb2 Database
+  shell: '{{ _mysql_cmd }} -Nse "SHOW TABLES;" {{ icingaweb2_db_name }} | while read table; do {{ _mysql_cmd }} -e "DROP TABLE $table" {{ icingaweb2_db_name }}; done'
+  when: icingaweb2_install == true and icingaweb2_db_create == true and (icingaweb2_db_purge == true or icingaweb2_db_purge|bool == true)
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Get tables in Icinga2 IDO Database
+  shell: '{{ _mysql_cmd }} -Nse "SHOW TABLES;" {{ icingaweb2_db_name }}'
+  register: icingaweb2_db_tables
+  when: icingaweb2_install == true and icingaweb2_db_create == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Check if Icingaweb2 Database Schema file exists
+  stat:
+    path: "{{ icingaweb2_db_schema_file_path}}"
+  register: icingaweb2_db_schema_file
+  when: icingaweb2_install == true and icingaweb2_db_create == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+  
+- name: Import Icinga2 IDO Database Schema
+  mysql_db:
+    name: "{{ icinga2_ido_db_name }}"
+    login_host: "{{ icingaweb2_db_host }}"
+    login_user: "{{ icingaweb2_db_user }}"
+    login_password: "{{ icingaweb2_db_password }}"
+    state: import
+    target: "{{ icingaweb2_db_schema_file_path }}"
+  when: icingaweb2_install == true and icingaweb2_db_create == true and icingaweb2_db_schema_file is defined and icingaweb2_db_schema_file.stat is defined and icingaweb2_db_schema_file.stat.exists and icingaweb2_db_tables.stdout_lines == []
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+
+# Icingaweb2 configuration
+
+- name: Configure authentication configuration file
+  template:
+    src: templates/icingaweb2/authentication.ini.j2
+    dest: /etc/icingaweb2/authentication.ini
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
-- name: Generate a new Icinga setup token
-  command: icingacli setup token create
-  register: icingacli_setup_token
+- name: Configure main configuration file
+  template:
+    src: templates/icingaweb2/config.ini.j2
+    dest: /etc/icingaweb2/config.ini
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Configure groups configuration file
+  template:
+    src: templates/icingaweb2/groups.ini.j2
+    dest: /etc/icingaweb2/groups.ini
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Configure resources configuration file
+  template:
+    src: templates/icingaweb2/resources.ini.j2
+    dest: /etc/icingaweb2/resources.ini
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Configure roles configuration file
+  template:
+    src: templates/icingaweb2/roles.ini.j2
+    dest: /etc/icingaweb2/roles.ini
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+
+# Configure root user
+
+- name: Generate the password hash for the Icingaweb2 admin user
+  command: "php -r \"echo password_hash('{{ icingaweb2_admin_password }}', PASSWORD_DEFAULT);\""
+  register: icingaweb2_admin_password_hash
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Configure the Icingaweb2 admin user
+  shell: "{{ _mysql_cmd }} -Nse \"INSERT INTO icingaweb_user (name, active, password_hash) VALUES ('{{ icingaweb2_admin_username }}', 1, '{{ icingaweb2_admin_password_hash.stdout_lines }}');\" {{ icingaweb2_db_name }}'"
+  when: icingaweb2_install == true and icingaweb2_db_create == true and (icingaweb2_db_purge == true or icingaweb2_db_purge|bool == true)
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+# End
+
+- name: Ensure that no setup token are configured
+  file:
+    path: /etc/icingaweb2/setup.token
+    state: absent
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']

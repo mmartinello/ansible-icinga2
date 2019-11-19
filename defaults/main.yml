@@ -101,6 +101,7 @@ icinga2_node_cn: "{{ ansible_fqdn }}"
 # Icinga Web 2
 
 icingaweb2_install: false
+icingaweb2_monitoring_module_path: /usr/share/icingaweb2/modules/monitoring
 
 # Icinga Web 2 HTTP Server
 icingaweb2_http_server: 'nginx'

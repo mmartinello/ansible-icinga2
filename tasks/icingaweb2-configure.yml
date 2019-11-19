@@ -26,6 +26,9 @@
   template:
     src: templates/icingaweb2/authentication.ini.j2
     dest: /etc/icingaweb2/authentication.ini
+    owner: root
+    group: root
+    mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
@@ -33,6 +36,9 @@
   template:
     src: templates/icingaweb2/config.ini.j2
     dest: /etc/icingaweb2/config.ini
+    owner: root
+    group: root
+    mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
@@ -40,6 +46,9 @@
   template:
     src: templates/icingaweb2/groups.ini.j2
     dest: /etc/icingaweb2/groups.ini
+    owner: root
+    group: root
+    mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
@@ -47,6 +56,9 @@
   template:
     src: templates/icingaweb2/resources.ini.j2
     dest: /etc/icingaweb2/resources.ini
+    owner: root
+    group: root
+    mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
@@ -54,6 +66,9 @@
   template:
     src: templates/icingaweb2/roles.ini.j2
     dest: /etc/icingaweb2/roles.ini
+    owner: www-data
+    group: icingaweb2
+    mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
@@ -120,7 +135,7 @@
 
 # Configure monitoring module
 
-- name: Enable Icingaweb2 monitoring module
+- name: Create the monitoring module configuration directory
   file:
     path: /etc/icingaweb2/modules/monitoring
     state: directory
@@ -131,6 +146,9 @@
   template:
     src: templates/icingaweb2/monitoring/backends.ini.j2
     dest: /etc/icingaweb2/modules/monitoring/backends.ini
+    owner: root
+    group: root
+    mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
@@ -138,6 +156,9 @@
   template:
     src: templates/icingaweb2/monitoring/commandtransports.ini.j2
     dest: /etc/icingaweb2/modules/monitoring/commandtransports.ini
+    owner: root
+    group: root
+    mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
@@ -145,9 +166,32 @@
   template:
     src: templates/icingaweb2/monitoring/security.ini.j2
     dest: /etc/icingaweb2/modules/monitoring/security.ini
+    owner: root
+    group: root
+    mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
+- name: Create the enabledModules directory
+  file:
+    path: /etc/icingaweb2/enabledModules
+    state: directory
+    owner: www-data
+    group: icingaweb2
+    mode: 2750
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Enable the monitoring module
+  file:
+    path: /etc/icingaweb2/enabledModules/monitoring
+    src: "{{ icingaweb2_monitoring_module_path }}"
+    state: link
+    owner: www-data
+    group: icingaweb2
+    mode: 0777
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
 
 # Final
 

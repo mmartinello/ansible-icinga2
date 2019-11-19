@@ -36,11 +36,11 @@
   when: icingaweb2_install == true
   tags: ['install-icingaweb2']
 
-- name: Icingaweb2 installed, please complete configuration on web setup
-  debug:
-    msg: "{{ icingacli_setup_token.stdout_lines }}"
-  when: icingaweb2_install == true
-  tags: ['install-icingaweb2']
+#- name: Icingaweb2 installed, please complete configuration on web setup
+#  debug:
+#    msg: "{{ icingacli_setup_token.stdout_lines }}"
+#  when: icingaweb2_install == true
+#  tags: ['install-icingaweb2']
 
 - include_tasks: config.yml
   tags: ['install-icinga2-stack', 'config']

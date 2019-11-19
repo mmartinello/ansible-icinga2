@@ -58,7 +58,7 @@
   when: icingaweb2_install == true and icingaweb2_db_create == true and (icingaweb2_db_purge == true or icingaweb2_db_purge|bool == true)
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
-- name: Get tables in Icinga2 IDO Database
+- name: Get tables in Icingaweb2 Database
   shell: '{{ _mysql_cmd }} -Nse "SHOW TABLES;" {{ icingaweb2_db_name }}'
   register: icingaweb2_db_tables
   when: icingaweb2_install == true and icingaweb2_db_create == true
@@ -71,9 +71,9 @@
   when: icingaweb2_install == true and icingaweb2_db_create == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
   
-- name: Import Icinga2 IDO Database Schema
+- name: Import Icingaweb2 Database Schema
   mysql_db:
-    name: "{{ icinga2_ido_db_name }}"
+    name: "{{ icingaweb2_db_name }}"
     login_host: "{{ icingaweb2_db_host }}"
     login_user: "{{ icingaweb2_db_user }}"
     login_password: "{{ icingaweb2_db_password }}"

@@ -58,7 +58,7 @@
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
 
-# Configure root user
+# Configure admin user
 
 - name: Generate the password hash for the Icingaweb2 admin user
   command: "php -r \"echo password_hash('{{ icingaweb2_admin_password }}', PASSWORD_DEFAULT);\""
@@ -66,12 +66,62 @@
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
-- name: Configure the Icingaweb2 admin user
-  shell: "{{ _mysql_cmd }} -Nse \"INSERT INTO icingaweb_user (name, active, password_hash) VALUES ('{{ icingaweb2_admin_username }}', 1, '{{ icingaweb2_admin_password_hash.stdout_lines }}');\" {{ icingaweb2_db_name }}'"
-  when: icingaweb2_install == true and icingaweb2_db_create == true and (icingaweb2_db_purge == true or icingaweb2_db_purge|bool == true)
+- name: Check if admin user already exists
+  command: "mysql -Nse \"SELECT count(*) FROM icingaweb_user where name = '{{ icingaweb2_admin_username }}'\" {{ icingaweb2_db_name }}"
+  register: icingaweb2_admin_user
+  when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 
-# End
+- name: Insert the Icingaweb2 admin user
+  command: "{{ _mysql_cmd }} -Nse \"INSERT INTO icingaweb_user (name, active, password_hash) VALUES ('{{ icingaweb2_admin_username }}', 1, '{{ icingaweb2_admin_password_hash.stdout }}');\" {{ icingaweb2_db_name }}"
+  register: icingaweb2_admin_user_create_query
+  when: icingaweb2_install == true and icingaweb2_admin_password_hash.stdout != "" and icingaweb2_admin_user.stdout == "0"
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Check if the password of the Icingaweb2 admin user needs to be changed
+  command: "mysql -Nse \"SELECT count(*) FROM icingaweb_user where name = '{{ icingaweb2_admin_username }}' and password_hash = '{{ icingaweb2_admin_password_hash.stdout }}'\" {{ icingaweb2_db_name }}"
+  register: icingaweb2_admin_user_check_password
+  when: icingaweb2_install == true and icingaweb2_admin_password_hash.stdout != "" and icingaweb2_admin_user.stdout != "0"
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Change the password of the Icingaweb2 admin user
+  command: "mysql -Nse \"UPDATE icingaweb_user SET password_hash = '{{ icingaweb2_admin_password_hash.stdout }}' where name = '{{ icingaweb2_admin_username }}'\" {{ icingaweb2_db_name }}"  
+  when: icingaweb2_install == true and icingaweb2_admin_password_hash.stdout != "" and icingaweb2_admin_user.stdout != "0" and icingaweb2_admin_user_check_password.stdout == "0"
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+
+# Configure monitoring module
+
+- name: Enable Icingaweb2 monitoring module
+  file:
+    path: /etc/icingaweb2/modules/monitoring
+    state: directory
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Configure backends configuration file
+  template:
+    src: templates/icingaweb2/monitoring/backends.ini.j2
+    dest: /etc/icingaweb2/modules/monitoring/backends.ini
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Configure command transports configuration file
+  template:
+    src: templates/icingaweb2/monitoring/commandtransports.ini.j2
+    dest: /etc/icingaweb2/modules/monitoring/commandtransports.ini
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+- name: Configure security configuration file
+  template:
+    src: templates/icingaweb2/monitoring/security.ini.j2
+    dest: /etc/icingaweb2/modules/monitoring/security.ini
+  when: icingaweb2_install == true
+  tags: ['install-icinga2-stack', 'install-icingaweb2']
+
+
+# Final
 
 - name: Ensure that no setup token are configured
   file:

@@ -178,7 +178,7 @@
     state: directory
     owner: www-data
     group: icingaweb2
-    mode: 2750
+    mode: "2750"
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
 

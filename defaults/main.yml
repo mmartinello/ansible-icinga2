@@ -116,6 +116,7 @@ icingaweb2_timezone: 'Europe/Rome'
 
 # Icinga Web 2 Database
 icingaweb2_db_create: true
+icingaweb2_db_purge: false
 icingaweb2_db_user_create: true
 icingaweb2_db_admin_user: null
 icingaweb2_db_admin_password: null
@@ -127,6 +128,9 @@ icingaweb2_db_user_host: 'localhost'
 icingaweb2_db_user_privileges: 'ALL'
 icingaweb2_ido_db_user_host: 'localhost'
 icingaweb2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,CREATE VIEW,INDEX,EXECUTE'
+icingaweb2_db_schema_file: '/usr/share/icingaweb2/etc/schema/mysql.schema.sql'
+
+
 
 #########################################################################
 # Plugins

@@ -110,7 +110,8 @@ icingaweb2_ssl_certificate_path: null
 icingaweb2_https_enable: false
 icingaweb2_https_force: true
 icingaweb2_https_port: 443
-icingaweb2_php_ini_file_path: '/etc/php/7.0/fpm/php.ini'
+icingaweb2_php_fpm_socket_path: '/run/php/php7.3-fpm.sock'
+icingaweb2_php_ini_file_path: '/etc/php/7.3/fpm/php.ini'
 icingaweb2_timezone: 'Europe/Rome'
 
 # Icinga Web 2 Database

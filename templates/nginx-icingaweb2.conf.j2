@@ -13,7 +13,7 @@ server {
         location ~ \.php$ {
                  try_files $uri /index.php =404;
                  fastcgi_split_path_info ^(.+\.php)(/.+)$;
-                 fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+                 fastcgi_pass unix:{{ icingaweb2_php_fpm_socket_path }};
                  fastcgi_index index.php;
                  fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
                  include fastcgi_params;
@@ -27,14 +27,13 @@ server {
 
 {% if icingaweb2_https_enable == True %}
 server {
-        listen {{ icingaweb2_https_port }};
+        listen {{ icingaweb2_https_port }} ssl;
         server_name {{ icingaweb2_http_servername }};
         root {{ icingaweb2_root_path }};
         index index.php;
 
         disable_symlinks off;
 
-        ssl on;
         ssl_certificate {{ icingaweb2_ssl_certificate_path }};
         ssl_certificate_key {{ icingaweb2_ssl_certificate_key_path }};
         ssl_session_timeout 5m;
@@ -49,7 +48,7 @@ server {
         location ~ \.php$ {
                  try_files $uri /index.php =404;
                  fastcgi_split_path_info ^(.+\.php)(/.+)$;
-                 fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+                 fastcgi_pass unix:{{ icingaweb2_php_fpm_socket_path }};
                  fastcgi_index index.php;
                  fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
                  include fastcgi_params;

@@ -7,6 +7,14 @@
   when: icinga2_master_setup == true
   tags: ['install-icinga2-stack']
 
+- name: Set Zone Name
+  lineinfile:
+    dest: "{{ config_root_dir }}/constants.conf"
+    regexp: "const ZoneName ="
+    line: "const ZoneName = \"{{ icinga2_master_host }}\""
+  when: icinga2_master_setup == true
+  tags: ['install-icinga2-stack']
+
 - name: Copy zones configuration file
   template:
     src: templates/zones.conf.j2
@@ -31,4 +39,21 @@
 - name: Create a new CA if not already exists
   command: icinga2 pki new-ca
   when: icinga2_master_setup == true and icinga2_ca_file.stat.exists == false
+  tags: ['install-icinga2-stack']
+
+- name: Check if node SSL certificate is already present
+  stat:
+    path: "/var/lib/icinga2/certs/{{ icinga2_master_host }}.crt"
+  register: icinga2_ssl_certificate
+  when: icinga2_master_setup == true
+  tags: ['install-icinga2-stack']
+
+- name: Generate a new key and CSR for the Icinga2 server
+  command: icinga2 pki new-cert --cn {{ icinga2_master_host }} --key /var/lib/icinga2/certs/{{ icinga2_master_host }}.key --csr /var/lib/icinga2/certs/{{ icinga2_master_host }}.csr
+  when: icinga2_master_setup == true and not icinga2_ssl_certificate.stat.exists
+  tags: ['install-icinga2-stack']
+
+- name: Sign the certificate with the master CA certificate on the master node
+  command: icinga2 pki sign-csr --csr /var/lib/icinga2/certs/{{ icinga2_master_host }}.csr --cert /var/lib/icinga2/certs/{{ icinga2_master_host }}.crt
+  when: icinga2_master_setup == true and not icinga2_ssl_certificate.stat.exists
   tags: ['install-icinga2-stack']

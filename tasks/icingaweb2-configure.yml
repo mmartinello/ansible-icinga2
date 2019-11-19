@@ -26,8 +26,8 @@
   template:
     src: templates/icingaweb2/authentication.ini.j2
     dest: /etc/icingaweb2/authentication.ini
-    owner: root
-    group: root
+    owner: www-data
+    group: icingaweb2
     mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
@@ -36,8 +36,8 @@
   template:
     src: templates/icingaweb2/config.ini.j2
     dest: /etc/icingaweb2/config.ini
-    owner: root
-    group: root
+    owner: www-data
+    group: icingaweb2
     mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
@@ -46,8 +46,8 @@
   template:
     src: templates/icingaweb2/groups.ini.j2
     dest: /etc/icingaweb2/groups.ini
-    owner: root
-    group: root
+    owner: www-data
+    group: icingaweb2
     mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
@@ -56,8 +56,8 @@
   template:
     src: templates/icingaweb2/resources.ini.j2
     dest: /etc/icingaweb2/resources.ini
-    owner: root
-    group: root
+    owner: www-data
+    group: icingaweb2
     mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
@@ -146,8 +146,8 @@
   template:
     src: templates/icingaweb2/monitoring/backends.ini.j2
     dest: /etc/icingaweb2/modules/monitoring/backends.ini
-    owner: root
-    group: root
+    owner: www-data
+    group: icingaweb2
     mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
@@ -156,8 +156,8 @@
   template:
     src: templates/icingaweb2/monitoring/commandtransports.ini.j2
     dest: /etc/icingaweb2/modules/monitoring/commandtransports.ini
-    owner: root
-    group: root
+    owner: www-data
+    group: icingaweb2
     mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']
@@ -166,8 +166,8 @@
   template:
     src: templates/icingaweb2/monitoring/security.ini.j2
     dest: /etc/icingaweb2/modules/monitoring/security.ini
-    owner: root
-    group: root
+    owner: www-data
+    group: icingaweb2
     mode: 0660
   when: icingaweb2_install == true
   tags: ['install-icinga2-stack', 'install-icingaweb2']

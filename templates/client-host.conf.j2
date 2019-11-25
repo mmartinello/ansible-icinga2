@@ -41,12 +41,20 @@ object Host "{{ inventory_hostname }}" {
 {% for var_name, variables in var_group_content.items() %}
   vars.{{ var_group_name }}["{{ var_name }}"] = {
 {% for param_name, param_value in variables.items() %}
+{% if param_value == false or param_value == true %}
+    {{ param_name }} = {{ param_value | lower }}
+{% else %}
     {{ param_name }} = "{{ param_value }}"
+{% endif %}
 {% endfor %}
 }
 {% endfor %}
 {% else %}
+{% if var_group_content == false or var_group_content == true %}
+  vars.{{ var_group_name }} = {{ var_group_content | lower }}
+{% else %}
   vars.{{ var_group_name }} = "{{ var_group_content }}"
+{% endif %}
 {% endif %}
 {%- endfor %}
   # End Host Variables

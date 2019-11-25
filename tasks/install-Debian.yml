@@ -7,6 +7,8 @@
       - rsync
       - nmap
       - bc
+      - gpg
+      - ca-certificates
     state: present
   tags: ['install-icinga2-stack', 'install-icinga2']
 

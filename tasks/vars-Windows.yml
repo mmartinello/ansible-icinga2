@@ -1,7 +1,7 @@
 ---
 - name: Get default IP address
   set_fact:
-    client_ip_address: "{{ ansible_ip_addresses[0] }}"
+    client_ip_address: "{{ icinga2_client_ip_address|default(ansible_ip_addresses[0]) }}"
   when: ansible_os_family == "Windows"
   tags: ['always']
 

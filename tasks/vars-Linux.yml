@@ -1,7 +1,7 @@
 ---
 - name: Get default IP address
   set_fact:
-    client_ip_address: "{{ ansible_default_ipv4.address }}"
+    client_ip_address: "{{ icinga2_client_ip_address|default(ansible_default_ipv4.address) }}"
   when: ansible_system == "Linux"
   tags: ['always']
 

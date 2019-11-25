@@ -92,7 +92,7 @@
 
 - name: Configure the client file on Icinga master server
   vars:
-    client_distro: "{{ ansible_distribution }}"
+    client_distro: "{{ icinga2_client_distro|default(ansible_distribution) }}"
   template:
     src: client-host.conf.j2
     dest: "{{ config_root_dir }}/zones.d/{{ icinga2_master_host }}/{{ inventory_hostname }}.conf"

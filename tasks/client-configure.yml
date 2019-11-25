@@ -61,9 +61,7 @@
   tags: ['configure-client']
 
 - name: Delete temporary files from Icinga master node
-  file:
-    path: "/tmp/{{ inventory_hostname }}.*"
-    state: absent
+  shell: "rm /tmp/{{ inventory_hostname }}.*"
   delegate_to: "{{ icinga2_master_inventory_hostname }}"
   become: true
   when: icinga2_client_configured == False
@@ -88,6 +86,7 @@
     module: file
     path: "/tmp/ansible/{{ inventory_hostname }}"
     state: absent
+  become: false
   when: icinga2_client_configured == False
   tags: ['configure-client']
 

@@ -67,3 +67,8 @@
   with_items: "{{ services_config_files }}"
   tags: ['plugins']
   notify: Reload Icinga2
+
+# Install Harisekhon Plugins
+- include_tasks: plugins-harisekhon.yml
+  when: ansible_system == "Linux" and ansible_os_family | lower in apt_distros and harisekhon_plugins_install == true
+  tags: ['plugins']

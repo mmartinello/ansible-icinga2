@@ -160,6 +160,7 @@ win_plugins_dest_dir_name: 'custom-plugins' # Path without root directory
 win_plugins_conf_src_template: templates/custom-command-plugins-windows.conf.j2
 plugins_custom_dir_var_name: 'CustomPluginsDir'
 plugins_command_files: []
+harisekhon_plugins_install: false
 
 
 #########################################################################

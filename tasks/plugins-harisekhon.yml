@@ -1,0 +1,8 @@
+---
+- name: Install Docker
+  import_role:
+    name: mmartinello.docker
+
+- name: Install Harisekhon Plugins
+  docker_image:
+    name: harisekhon/nagios-plugins

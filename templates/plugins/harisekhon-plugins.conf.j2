@@ -1,0 +1,972 @@
+object CheckCommand "_hk_check_elasticsearch" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_elasticsearch.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$elasticsearch_host$"
+                        description = "ElasticSearch host"
+                }
+                "-P" = {
+                        value = "$elasticsearch_port$"
+                        description = "ElasticSearch port (default: 9200)"
+                }
+                "-u" = {
+                        value = "$elasticsearch_user$"
+                        description = "ElasticSearch user"
+                }
+                "-p" = {
+                        value = "$elasticsearch_password$"
+                        description = "ElasticSearch password"
+                }
+                "-C" = {
+                        value = "$elasticsearch_cluster$"
+                        description = "Cluster to expect membership of"
+                }
+                "--es-version" = {
+                        value = "$elasticsearch_version$"
+                        description = "Elasticsearch version regex to expect"
+                }
+                "--lucene-version" = {
+                        value = "$elasticsearch_lucene_version$"
+                        description = "Lucene version regex to expect"
+                }
+                "-S" = {
+                        set_if = "$elasticsearch_ssl$"
+                        description = "Use SSL connection"
+                }
+                "--ssl-CA-path" = {
+                        value = "$elasticsearch_ssl_ca_path$"
+                        description = "Path to CA certificate directory for validating SSL certificate"
+                }
+                "-ssl-noverify" = {
+                        set_if = "$elasticsearch_ssl_noverify$"
+                        description = "Do not verify SSL certificate"
+                }
+                "-t = {
+                        value = "$elasticsearch_timeout$"
+                        description = "Timeout in secs ($TIMEOUT, default: 10)"
+                }
+                "-v" = {
+                        value = "$elasticsearch_verbose$"
+                        description = "Verbose level ($VERBOSE=<int>, or use multiple -v, -vv, -vvv)"
+                }
+        }
+
+        vars.elasticsearch_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_elasticsearch_cluster_status" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_elasticsearch_cluser_status.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$elasticsearch_host$"
+                        description = "ElasticSearch host"
+                }
+                "-P" = {
+                        value = "$elasticsearch_port$"
+                        description = "ElasticSearch port (default: 9200)"
+                }
+                "-u" = {
+                        value = "$elasticsearch_user$"
+                        description = "ElasticSearch user"
+                }
+                "-p" = {
+                        value = "$elasticsearch_password$"
+                        description = "ElasticSearch password"
+                }
+                "-C" = {
+                        value = "$elasticsearch_cluster$"
+                        description = "Cluster name to expect (optional). Cluster name is used for auto-discovery and should be unique to each cluster in a single network"
+                }
+                "-S" = {
+                        set_if = "$elasticsearch_ssl$"
+                        description = "Use SSL connection"
+                }
+                "--ssl-CA-path" = {
+                        value = "$elasticsearch_ssl_ca_path$"
+                        description = "Path to CA certificate directory for validating SSL certificate"
+                }
+                "-ssl-noverify" = {
+                        set_if = "$elasticsearch_ssl_noverify$"
+                        description = "Do not verify SSL certificate"
+                }
+                "-t = {
+                        value = "$elasticsearch_timeout$"
+                        description = "Timeout in secs ($TIMEOUT, default: 10)"
+                }
+                "-v" = {
+                        value = "$elasticsearch_verbose$"
+                        description = "Verbose level ($VERBOSE=<int>, or use multiple -v, -vv, -vvv)"
+                }
+        }
+
+        vars.elasticsearch_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_nginx_stats" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_nginx_stats.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$nginx_host$"
+                        description = "Nginx host"
+                }
+                "-P" = {
+                        value = "$nginx_port$"
+                        description = "Nginx port (default: 80)"
+                }
+                "-u" = {
+                        value = "$nginx_url$"
+                        description = "Nginx Status URL (usually something like /nginx_status - must be compiled with support and enabled in the nginx config using stub_status)"
+                }
+                "--no-keepalives" = {
+                        value = "$nginx_no_keepalives$"
+                        description = "Use only when nginx config has 'keepalive_timeout 0' to enable an extra sanity check against the Handled/Request counts where Handled >= Requests must be true. A sanity check of Accepted >= Handled is performed regardless"
+                }
+                "-w" = {
+                        value = "$nginx_warning$"
+                        description = "Warning  threshold or ran:ge (inclusive) for Active Connections count"
+                }
+                "-c" = {
+                        value = "$nginx_critical$"
+                        description = "Critical threshold or ran:ge (inclusive) for Active Connections count"
+                }
+                "-t" = {
+                        value = "$nginx_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$nginx_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.nginx_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_redis_stats" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_redis_stats.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$redis_host$"
+                        description = "Redis host"
+                }
+                "-P" = {
+                        value = "$redis_port$"
+                        description = "Redis port (default: 6379)"
+                }
+                "-p" = {
+                        value = "$redis_password$"
+                        description = "Redis password"
+                }
+                "-s" = {
+                        value = "$redis_stats$"
+                        description = "Stats to retrieve, comma separated (default: all)"
+                }
+                "-e" = {
+                        value = "$redis_expected$"
+                        description = "Expected value for stat. Optional, only valid when a single stat is given"
+                }
+                "-w" = {
+                        value = "$redis_warning$"
+                        description = "Warning  threshold ra:nge (inclusive). Optional, only valid when a single stat is given"
+                }
+                "-c" = {
+                        value = "$redis_critical$"
+                        description = "Critical threshold ra:nge (inclusive). Optional, only valid when a single stat is given"
+                }
+                "-" = {
+                        value = "$$"
+                        description = ""
+                }
+                "--precision" = {
+                        value = "$redis_precision$"
+                        description = "Number of decimal places for timings (default: 5)"
+                }
+                "-t" = {
+                        value = "$redis_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$redis_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.redis_host = "$check_address$"
+}
+
+
+object CheckCommand "_hk_check_redis_write" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_redis_write.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$redis_host$"
+                        description = "Redis host"
+                }
+                "-P" = {
+                        value = "$redis_port$"
+                        description = "Redis port (default: 6379)"
+                }
+                "-d" = {
+                        value = "$redis_database$"
+                        description = "Database to select (default: 0)"
+                }
+                "-p" = {
+                        value = "$redis_password$"
+                        description = "Redis password (Optional, use if Redis is configured with requirepass)"
+                }
+                "-w" = {
+                        value = "$redis_warning$"
+                        description = "Warning  threshold in seconds for each read/write/delete operation (use float for milliseconds)"
+                }
+                "-c" = {
+                        value = "$redis_critical$"
+                        description = "Critical threshold in seconds for each read/write/delete operation (use float for milliseconds)"
+                }
+                "--precision" = {
+                        value = "$redis_precision$"
+                        description = "Number of decimal places for timings (default: 5)"
+                }
+                "-t" = {
+                        value = "$redis_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$redis_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.redis_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_rabbitmq" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_rabbitmq.py" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$rabbitmq_host$"
+                        description = "RabbitMQ Host"
+                }
+                "-P" = {
+                        value = "$rabbitmq_port$"
+                        description = "RabbitMQ Port (default: 5672)"
+                }
+                "-u" = {
+                        value = "$rabbitmq_username$"
+                        description = "RabbitMQ Username"
+                }
+                "-p" = {
+                        value = "$rabbitmq_password$"
+                        description = "RabbitMQ Password"
+                }
+                "-S" = {
+                        set_if = "$rabbitmq_ssl$"
+                        description = "Use SSL connection"
+                }
+                "-O" = {
+                        value = "$rabbitmq_vhost$"
+                        description = "RabbitMQ Vhost to connect to (default: /)"
+                }
+                "-E" = {
+                        value = "$rabbitmq_exchange$"
+                        description = "Exchange to use"
+                }
+                "-T" = {
+                        value = "$rabbitmq_exchange_type$"
+                        description = "Exchange type to use"
+                }
+                "-Q" = {
+                        value = "$rabbitmq_queue$"
+                        description = "Queue to create and bind to exchange (default: None, auto-generated if not supplied)"
+                }
+                "-R" = {
+                        value = "$rabbitmq_routing_key$"
+                        description = "Routing Key to use when publishing unique test message to exchange (defaults to same as queue name if not supplied)"
+                }
+                "-R" = {
+                        value = "$rabbitmq_$"
+                        description = ""
+                }
+                "--non-durable" = {
+                        value = "$rabbitmq_non_durable$"
+                        description = "Publish message as non-persistent / create queue as non-durable"
+                }
+                "--use-transaction" = {
+                        value = "$rabbitmq_use_transaction$"
+                        description = "Use AMQP transactions instead of RabbitMQ confirmation (transactions are ~250x slower)"
+                }
+                "-C" = {
+                        value = "$rabbitmq_connection_attempts$"
+                        description = "Number of connection attempts (default: 1)"
+                }
+                "-R" = {
+                        value = "$rabbitmq_$"
+                        description = ""
+                }
+                "-r" = {
+                        value = "$rabbitmq_retry_delay$"
+                        description = "Retry delay between connection attempts"
+                }
+                "-s" = {
+                        value = "$rabbitmq_sleep$"
+                        description = "Sleep in seconds between producing and consuming from given exchange (optional)"
+                }
+                "-w" = {
+                        value = "$rabbitmq_warning$"
+                        description = "Warning threshold or ra:nge (inclusive, default: 1)"
+                }
+                "-c" = {
+                        value = "$rabbitmq_critical$"
+                        description = "Critical threshold or ra:nge (inclusive, default: 2)"
+                }
+                "-t" = {
+                        value = "$rabbitmq_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$rabbitmq_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.rabbitmq_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_rabbitmq_healthchecks" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_rabbitmq_healthchecks.py" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$rabbitmq_host$"
+                        description = "RabbitMQ Host"
+                }
+                "-P" = {
+                        value = "$rabbitmq_port$"
+                        description = "RabbitMQ Port (default: 15672)"
+                }
+                "-u" = {
+                        value = "$rabbitmq_username$"
+                        description = "RabbitMQ Username"
+                }
+                "-p" = {
+                        value = "$rabbitmq_password$"
+                        description = "RabbitMQ Password"
+                }
+                "--kerberos" = {
+                        set_if = "$rabbitmq_kerberos$"
+                        description = "Kerberos SpNego authentication, uses TGT cache from $KRB5CCNAME or keytab from $KRB5_CLIENT_KEYTAB environment variable if defined (overrides --user/--password)"
+                }
+                "-S" = {
+                        set_if = "$rabbitmq_ssl$"
+                        description = "Use SSL connection"
+                }
+                "-t" = {
+                        value = "$rabbitmq_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$rabbitmq_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.rabbitmq_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_aws_s3_file" {
+        command = [ {{ harisekhon_plugins_cmd }} check_aws_s3_file.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$aws_s3_host$"
+                        description = "AWS host"
+                }
+                "-P" = {
+                        value = "$aws_s3_port$"
+                        description = "AWS port"
+                }
+                "-b" = {
+                        value = "$aws_s3_bucket$"
+                        description = "AWS S3 bucket"
+                }
+                "-f" = {
+                        value = "$aws_s3_file$"
+                        description = "AWS S3 file path"
+                }
+                "--aws-access-key" = {
+                        value = "$aws_s3_access_key$"
+                        description = "AWS Access Key"
+                }
+                "--aws-secret-key" = {
+                        value = "$aws_s3_secret_key$"
+                        description = "AWS Secret Key"
+                }
+                "-G" = {
+                        set_if = "$aws_s3_get$"
+                        description = "Perform full HTTP GET request instead of default HTTP HEAD. This will download the whole file, useful if you want to see the full download time from AWS S3. You may need to increase the --timeout to fetch file if more than a few MB"
+                }
+                "--no-ssl" = {
+                        set_if = "$aws_s3_no_ssl$"
+                        description = "Don't use SSL, connect to AWS S3 with plaintext HTTP instead of HTTPS (not recommended unless you're using a private cloud storage like Minio)"
+                }
+                "--ssl-CA-path" = {
+                        value = "$aws_s3_ssl_ca_path$"
+                        description = "Path to CA certificate directory for validating SSL certificate"
+                }
+                "--ssl-noverify" = {
+                        value = "$aws_s3_ssl_noverify$"
+                        description = "Do not verify SSL certificate from AWS S3 (not recommended)"
+                }
+                "--region" = {
+                        value = "$aws_s3_region$"
+                        description = "AWS Region, i.e. us-east-1"
+                }
+                "--age" = {
+                        value = "$aws_s3_age$"
+                        description = "Maximum duration in seconds since the last-modified for the file to be deemed as valid"
+                }
+                "-t" = {
+                        value = "$aws_s3_timeout$"
+                        description = "Timeout in secs ($TIMEOUT, default: 10)"
+                }
+                "-v" = {
+                        value = "$aws_s3_verbose$"
+                        description = "Verbose level"
+                }
+        }
+}
+
+
+object CheckCommand "_hk_check_influxdb_api_ping" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_influxdb_api_ping.py" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$influxdb_host$"
+                        description = "InfluxDB host"
+                }
+                "-P" = {
+                        value = "$influxdb_port$"
+                        description = "InfluxDB port (default: 8086)"
+                }
+                "-u" = {
+                        value = "$influxdb_username$"
+                        description = "InfluxDB Username"
+                }
+                "-p" = {
+                        value = "$influxdb_password$"
+                        description = "InfluxDB Password"
+                }
+                "--kerberos" = {
+                        value = "$influxdb_kerberos$"
+                        description = "Kerberos SpNego authentication, uses TGT cache from $KRB5CCNAME or keytab from $KRB5_CLIENT_KEYTAB environment variable if defined (overrides --user/--password)"
+                }
+                "-S" = {
+                        set_if = "$influxdb_ssl$"
+                        description = "Use SSL"
+                }
+                "-t" = {
+                        value = "$influxdb_timeout$"
+                        description = " Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$influxdb_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.influxdb_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_logstash_status" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_logstash_status.py" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$logstash_host$"
+                        description = "Logstash Host"
+                }
+                "-P" = {
+                        value = "$logstash_port$"
+                        description = "Logstash port (default: 9600)"
+                }
+                "-S" = {
+                        value = "$logstash_ssl$"
+                        description = "Use SSL"
+                }
+                "-w" = {
+                        value = "$logstash_warning$"
+                        description = "Warning threshold or ra:nge (inclusive, default: 90)"
+                }
+                "-c" = {
+                        value = "$logstash_critical$"
+                        description = "Critical threshold or ra:nge (inclusive)"
+                }
+                "-t" = {
+                        value = "$logstash_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$nginx_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.logstash_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_memcached_write" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_memcached_write.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$memcached_host$"
+                        description = "Memcached host"
+                }
+                "-P" = {
+                        value = "$memcached_port$"
+                        description = "Memcached port (default: 11211)"
+                }
+                "-w" = {
+                        value = "$memcached_warning$"
+                        description = "Warning  threshold in seconds for each read/write/delete operation (use float for milliseconds)"
+                }
+                "-c" = {
+                        value = "$memcached_critical$"
+                        description = "Critical threshold in seconds for each read/write/delete operation (use float for milliseconds)"
+                }
+                "--precision" = {
+                        value = "$memcached_precision$"
+                        description = "Number of decimal places for timings (default: 5)"
+                }
+                "-t" = {
+                        value = "$memcached_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$nginx_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.memcached_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_memcached_stats" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_memcached_stats.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$memcached_host$"
+                        description = "Memcached host"
+                }
+                "-P" = {
+                        value = "$memcached_port$"
+                        description = "Memcached port (default: 11211)"
+                }
+                "-w" = {
+                        value = "$memcached_warning$"
+                        description = "Warning  threshold in seconds for each read/write/delete operation (use float for milliseconds)"
+                }
+                "-c" = {
+                        value = "$memcached_critical$"
+                        description = "Critical threshold in seconds for each read/write/delete operation (use float for milliseconds)"
+                }
+                "-t" = {
+                        value = "$memcached_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$nginx_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.memcached_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_mysql_query" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_mysql_query.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$mysql_host$"
+                        description = "MySQL host"
+                }
+                "-P" = {
+                        value = "$mysql_port$"
+                        description = "MySQL port (default: 3306)"
+                }
+                "-u" = {
+                        value = "$mysql_user$"
+                        description = "MySQL user"
+                }
+                "-p" = {
+                        value = "$mysql_p$"
+                        description = "MySQL password"
+                }
+                "-d" = {
+                        value = "$mysql_database$"
+                        description = "MySQL database ($MYSQL_DATABASE)"
+                }
+                "-s" = {
+                        value = "$mysql_socket$"
+                        description = "MySQL socket file through which to connect (defaults: /var/lib/mysql/mysql.sock, /tmp/mysql.sock)"
+                }
+                "-q" = {
+                        value = "$mysql_query$"
+                        description = "MySQL query to execute"
+                }
+                "-f" = {
+                        value = "$mysql_field$"
+                        description = "Field name / number to check the results of (defaults to '1' for the first field)"
+                }
+                "-e" = {
+                        set_if = "$mysql_epoch$"
+                        description = "Subtract result from current time in epoch format from result (useful for timestamp based comparisons)"
+                }
+                "-m" = {
+                        value = "$mysql_message$"
+                        description = "Message to output after result. Can take a printf string with a single substitution (defaults to 'query returned')"
+                }
+                "-n" = {
+                        value = "$mysql_message_prepend$"
+                        description = "Display message before rather than after result (prepend)"
+                }
+                "-o" = {
+                        value = "$mysql_output$"
+                        description = "Exact output to expect"
+                }
+                "-r" = {
+                        value = "$mysql_regex$"
+                        description = "Regex to match the result against"
+                }
+                "-w" = {
+                        value = "$mysql_warning$"
+                        description = "Warning  threshold or ran:ge (inclusive)"
+                }
+                "-c" = {
+                        value = "$mysql_critical$"
+                        description = "Critical threshold or ran:ge (inclusive)"
+                }
+                "-g" = {
+                        set_if = "$mysql_graph$"
+                        description = "Perfdata output for graphing"
+                }
+                "-l" = {
+                        value = "$mysql_label$"
+                        description = "Perfdata label. If not specified uses field name or Undefined if field name doesn't match a known regex of chars"
+                }
+                "-U" = {
+                        value = "$mysql_units$"
+                        description = "Units of measurement for graphing output (%/s/ms/us/B/KB/MB/TB/c)"
+                }
+                "-T" = {
+                        set_if = "$mysql_short$"
+                        description = "Shorten output, do not output message just result"
+                }
+                "-Q" = {
+                        set_if = "$mysql_no_querytime$"
+                        description = "Do not output the mysql query time"
+                }
+                "-t" = {
+                        value = "$mysql_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$nginx_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.mysql_host = "$check_address$"
+}
+
+
+object CheckCommand "_hk_check_solr_api_ping" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_solr_api_ping.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$solr_host$"
+                        description = "Solr host"
+                }
+                "-P" = {
+                        value = "$sorl_port$"
+                        description = "Solr port (default: 8983)"
+                }
+                "-C" = {
+                        value = "$sorl_collection$"
+                        description = "Solr Collection name"
+                }
+                "--list-collections" = {
+                        set_if = "$sorl_list_collections$"
+                        description = "List Collections (Solr 4 onwards)"
+                }
+                "--list-cores" = {
+                        set_if = "$sorl_list_cores$"
+                        description = "List Cores for which there are loaded cores on given Solr instance"
+                }
+                "--http-context" = {
+                        value = "$solr_http_context$"
+                        description = "Solr http context handler prefix for REST API url (defaults to /solr)"
+                }
+                "-w" = {
+                        value = "$solr_warning$"
+                        description = "Warning  threshold or ran:ge (inclusive, default: 200)"
+                }
+                "-c" = {
+                        value = "$solr_critical$"
+                        description = "Critical threshold or ran:ge (inclusive, default: 1000)"
+                }
+                "-S" = {
+                        set_if = "$solr_ssl$"
+                        description = "Use SSL connection"
+                }
+                "-ssl-CA-path" = {
+                        value = "$solr_ca_path$"
+                        description = "Path to CA certificate directory for validating SSL certificate (automatically enables --ssl)"
+                }
+                "--ssl-noverify" = {
+                        set_if = "$solr_ssl_noverify$"
+                        description = "Do not verify SSL certificate (automatically enables --ssl)"
+                }
+                "-t" = {
+                        value = "$solr_timeout$"
+                        description = "Timeout in secs default: 10)"
+                }
+                "-v" = {
+                        value = "$nginx_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.solr_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_solr_write" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_solr_write.pl" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$solr_host$"
+                        description = "Solr host"
+                }
+                "-P" = {
+                        value = "$sorl_port$"
+                        description = "Solr port (default: 8983)"
+                }
+                "-C" = {
+                        value = "$sorl_collection$"
+                        description = "Solr Collection name"
+                }
+                "--soft-commit" = {
+                        set_if = "$sorl_soft_commit$"
+                        description = "Soft commit instead of hard commit"
+                }
+                "-d" = {
+                        set_if = "$sorl_no_delete$"
+                        description = "Don't delete test inserted document (useful for debugging)"
+                }
+                "--list-collections" = {
+                        set_if = "$sorl_list_collections$"
+                        description = "List Collections (Solr 4 onwards)"
+                }
+                "--list-cores" = {
+                        set_if = "$sorl_list_cores$"
+                        description = "List Cores for which there are loaded cores on given Solr instance"
+                }
+                "--http-context" = {
+                        value = "$solr_http_context$"
+                        description = "Solr http context handler prefix for REST API url (defaults to /solr)"
+                }
+                "-w" = {
+                        value = "$solr_warning$"
+                        description = "Warning  threshold or ran:ge (inclusive, default: 200)"
+                }
+                "-c" = {
+                        value = "$solr_critical$"
+                        description = "Critical threshold or ran:ge (inclusive, default: 1000)"
+                }
+                "-S" = {
+                        set_if = "$solr_ssl$"
+                        description = "Use SSL connection"
+                }
+                "-ssl-CA-path" = {
+                        value = "$solr_ca_path$"
+                        description = "Path to CA certificate directory for validating SSL certificate (automatically enables --ssl)"
+                }
+                "--ssl-noverify" = {
+                        set_if = "$solr_ssl_noverify$"
+                        description = "Do not verify SSL certificate (automatically enables --ssl)"
+                }
+                "-t" = {
+                        value = "$solr_timeout$"
+                        description = "Timeout in secs default: 10)"
+                }
+                "-v" = {
+                        value = "$nginx_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.solr_host = "$check_address$"
+}
+
+
+object CheckCommand "_hk_check_vault_health" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_vault_health.py" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$vault_host$"
+                        description = "Vault host"
+                }
+                "-P" = {
+                        value = "$vault_port$"
+                        description = "Vault port (default: 8200)"
+                }
+                "-S" = {
+                        value = "$vault_ssl$"
+                        description = "Use SSL"
+                }
+                "--standby" = {
+                        set_if = "$vault_standby$"
+                        description = "Allow standby"
+                }
+                "--sealed" = {
+                        set_if = "$vault_sealed$"
+                        description = "Expect sealed"
+                }
+                "--unsealed" = {
+                        set_if = "$vault_unsealed$"
+                        description = "Expect unsealed"
+                }
+                "-w" = {
+                        value = "$vault_warning$"
+                        description = "Warning threshold or ra:nge (inclusive, default: 60)"
+                }
+                "-c" = {
+                        value = "$vault_critical$"
+                        description = "Critical threshold or ra:nge (inclusive)"
+                }
+                "-t" = {
+                        value = "$vault_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$nginx_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.vault_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_grafana_health" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_grafana_health.py" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$grafana_host$"
+                        description = "Grafana host"
+                }
+                "-P" = {
+                        value = "$grafana_port$"
+                        description = "Grafana port (default: 3000)"
+                }
+                "-u" = {
+                        value = "$grafana_user$"
+                        description = "Grafana Username"
+                }
+                "-p" = {
+                        value = "$grafana_password$"
+                        description = "Grafana Password"
+                }
+                "--kerberos" = {
+                        value = "$grafana_kerberos$"
+                        description = "Kerberos SpNego authentication, uses TGT cache from $KRB5CCNAME or keytab from $KRB5_CLIENT_KEYTAB environment variable if defined (overrides --user/--password)"
+                }
+                "-S" = {
+                        set_if = "$grafana_ssl$"
+                        description = "Use SSL"
+                }
+                "-t" = {
+                        value = "$grafana_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$nginx_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.grafana_host = "$check_address$"
+}
+
+object CheckCommand "_hk_check_grafana_version" {
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} check_grafana_version.py" ]
+
+        arguments = {
+                "-H" = {
+                        value = "$grafana_host$"
+                        description = "Grafana host"
+                }
+                "-P" = {
+                        value = "$grafana_port$"
+                        description = "Grafana port (default: 3000)"
+                }
+                "-u" = {
+                        value = "$grafana_user$"
+                        description = "Grafana Username"
+                }
+                "-p" = {
+                        value = "$grafana_password$"
+                        description = "Grafana Password"
+                }
+                "--kerberos" = {
+                        value = "$grafana_kerberos$"
+                        description = "Kerberos SpNego authentication, uses TGT cache from $KRB5CCNAME or keytab from $KRB5_CLIENT_KEYTAB environment variable if defined (overrides --user/--password)"
+                }
+                "-S" = {
+                        set_if = "$grafana_ssl$"
+                        description = "Use SSL"
+                }
+                "-e" = {
+                        value = "$grafana_expected$"
+                        description = "Expected version regex (optional)"
+                }
+                "-t" = {
+                        value = "$grafana_timeout$"
+                        description = "Timeout in secs (default: 10)"
+                }
+                "-v" = {
+                        value = "$nginx_verbose$"
+                        description = "Verbose level"
+                }
+        }
+
+        vars.grafana_host = "$check_address$"
+}

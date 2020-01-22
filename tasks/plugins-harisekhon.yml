@@ -6,3 +6,8 @@
 - name: Install Harisekhon Plugins
   docker_image:
     name: harisekhon/nagios-plugins
+
+- name: Deploy Harisekhon Plugins Commands Configuration File
+  template:
+    src: "templates/plugins/harisekhon-plugins-commands.conf.j2"
+    dest: "{{ config_root_dir }}/{{ custom_confd_dir }}/harisekhon-plugins-commands.conf"

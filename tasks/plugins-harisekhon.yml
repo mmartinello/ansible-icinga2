@@ -3,6 +3,11 @@
   import_role:
     name: mmartinello.docker
 
+- name: Install Docker PIP package
+  pip:
+    name: "docker"
+    state: present
+
 - name: Install Harisekhon Plugins
   docker_image:
     name: harisekhon/nagios-plugins

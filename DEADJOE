@@ -44,3 +44,58 @@ Processing '/etc/joe/joerc'...
 Processing '/etc/joe/ftyperc'...
 Finished processing /etc/joe/ftyperc
 Finished processing /etc/joe/joerc
+
+*** These modified files were found in JOE when it aborted on Sun Jan 26 16:24:06 2020
+*** JOE was aborted because the terminal closed
+
+*** File '(Unnamed)'
+1
+1
+1
+1
+1
+
+*** File '(Unnamed)'
+netbookingsrl.it
+netbookingsrl.it
+CheckCommand "_
+CheckCommand "_
+check_command = "_
+ies.it
+
+*** File '(Unnamed)'
+swap
+swap
+become: false
+client_ip_address
+Windows
+zfs
+debian_monitoring_plugins
+plugin
+.chino.io
+chino.io
+elasticsearch
+aws
+redis
+logstash
+grafana
+logstash
+
+*** File '(Unnamed)'
+/Users/mattia/Projects/ansible/chino/roles/external/mmartinello.icinga2/tasks/plugins-harisekhon.yml
+/Users/mattia/Projects/ansible/chino/roles/external/mmartinello.icinga2/tasks/plugins-harisekhon.yml
+/Users/mattia/Projects/ansible/chino/roles/external/mmartinello.icinga2/tasks/plugins-harisekhon.yml
+/Users/mattia/Projects/ansible/chino/roles/external/mmartinello.docker/tasks/install-Debian.yml
+host_vars/cop.dc.chino.io.y
+/Users/mattia/Projects/ansible/chino/roles/external/mmartinello.docker/tasks/install-Debian.yml
+tasks/install-Debian.yml
+/Users/mattia/Projects/ansible/chino/roles/external/mmartinello.docker/tasks/install-Debian.yml
+tasks/install-Debian.yml
+mssql.conf
+templates/plugins/harisekhon-plugins-commands.conf.j2
+
+*** File '* Startup Log *'
+Processing '/usr/local/Cellar/joe/4.5/etc/joe/joerc'...
+Processing '/usr/local/Cellar/joe/4.5/etc/joe/ftyperc'...
+Finished processing /usr/local/Cellar/joe/4.5/etc/joe/ftyperc
+Finished processing /usr/local/Cellar/joe/4.5/etc/joe/joerc

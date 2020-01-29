@@ -43,6 +43,7 @@
 #  tags: ['install-icingaweb2']
 
 - include_tasks: config.yml
+  when: icinga2_client_configure == false
   tags: ['install-icinga2-stack', 'config']
 
 - include_tasks: plugins.yml

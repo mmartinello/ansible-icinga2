@@ -134,6 +134,8 @@ icingaweb2_db_password: "{{ ansible_machine_id ~ '_icingaweb2' | hash('sha1') | 
 icingaweb2_db_user_host: 'localhost'
 icingaweb2_db_user_privileges: 'ALL'
 icingaweb2_ido_db_user_host: 'localhost'
+icingaweb2_ido_db_port: 3306
+icingaweb2_ido_db_name: 'icinga2'
 icingaweb2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,CREATE VIEW,INDEX,EXECUTE'
 icingaweb2_db_schema_file_path: '/usr/share/icingaweb2/etc/schema/mysql.schema.sql'
 

@@ -29,6 +29,14 @@
   notify: Reload Icinga2
   tags: ['configure-client']
 
+- name: Remove default unnecessary config files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: "{{ default_unnecessary_config_files }}"
+  notify: Reload Icinga2
+  tags: ['configure-client']
+
 - name: Get Virtual Machine type
   command: virt-what
   register: virt_what

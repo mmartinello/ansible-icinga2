@@ -163,7 +163,7 @@ win_plugins_conf_src_template: templates/custom-command-plugins-windows.conf.j2
 plugins_custom_dir_var_name: 'CustomPluginsDir'
 plugins_command_files: []
 harisekhon_plugins_install: false
-harisekhon_plugins_cmd: 'docker run harisekhon/nagios-plugins'
+harisekhon_plugins_cmd: '"docker", "run", "--rm"'
 
 
 #########################################################################

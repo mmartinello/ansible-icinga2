@@ -1,6 +1,6 @@
 object CheckCommand "_hk_check_elasticsearch" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_elasticsearch.pl" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_elasticsearch.pl" ]
 
         arguments = {
                 "-H" = {
@@ -43,7 +43,7 @@ object CheckCommand "_hk_check_elasticsearch" {
                         set_if = "$elasticsearch_ssl_noverify$"
                         description = "Do not verify SSL certificate"
                 }
-                "-t = {
+                "-t" = {
                         value = "$elasticsearch_timeout$"
                         description = "Timeout in secs ($TIMEOUT, default: 10)"
                 }
@@ -58,7 +58,7 @@ object CheckCommand "_hk_check_elasticsearch" {
 
 object CheckCommand "_hk_check_elasticsearch_cluster_status" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_elasticsearch_cluser_status.pl" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_elasticsearch_cluser_status.pl" ]
 
         arguments = {
                 "-H" = {
@@ -93,7 +93,7 @@ object CheckCommand "_hk_check_elasticsearch_cluster_status" {
                         set_if = "$elasticsearch_ssl_noverify$"
                         description = "Do not verify SSL certificate"
                 }
-                "-t = {
+                "-t" = {
                         value = "$elasticsearch_timeout$"
                         description = "Timeout in secs ($TIMEOUT, default: 10)"
                 }
@@ -108,7 +108,7 @@ object CheckCommand "_hk_check_elasticsearch_cluster_status" {
 
 object CheckCommand "_hk_check_nginx_stats" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_nginx_stats.pl" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_nginx_stats.pl" ]
 
         arguments = {
                 "-H" = {
@@ -150,7 +150,7 @@ object CheckCommand "_hk_check_nginx_stats" {
 
 object CheckCommand "_hk_check_redis_stats" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_redis_stats.pl" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_redis_stats.pl" ]
 
         arguments = {
                 "-H" = {
@@ -205,7 +205,7 @@ object CheckCommand "_hk_check_redis_stats" {
 
 object CheckCommand "_hk_check_redis_write" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_redis_write.pl" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_redis_write.pl" ]
 
         arguments = {
                 "-H" = {
@@ -251,7 +251,7 @@ object CheckCommand "_hk_check_redis_write" {
 
 object CheckCommand "_hk_check_rabbitmq" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_rabbitmq.py" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_rabbitmq.py" ]
 
         arguments = {
                 "-H" = {
@@ -345,7 +345,7 @@ object CheckCommand "_hk_check_rabbitmq" {
 
 object CheckCommand "_hk_check_rabbitmq_healthchecks" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_rabbitmq_healthchecks.py" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_rabbitmq_healthchecks.py" ]
 
         arguments = {
                 "-H" = {
@@ -386,7 +386,8 @@ object CheckCommand "_hk_check_rabbitmq_healthchecks" {
 }
 
 object CheckCommand "_hk_check_aws_s3_file" {
-        command = [ {{ harisekhon_plugins_cmd }} check_aws_s3_file.pl" ]
+        import "ipv4-or-ipv6"
+        command = [ {{ harisekhon_plugins_cmd }} "check_aws_s3_file.pl" ]
 
         arguments = {
                 "-H" = {
@@ -446,12 +447,14 @@ object CheckCommand "_hk_check_aws_s3_file" {
                         description = "Verbose level"
                 }
         }
+
+        vars.aws_s3_file = "icinga2_check.file"
 }
 
 
 object CheckCommand "_hk_check_influxdb_api_ping" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_influxdb_api_ping.py" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_influxdb_api_ping.py" ]
 
         arguments = {
                 "-H" = {
@@ -493,7 +496,7 @@ object CheckCommand "_hk_check_influxdb_api_ping" {
 
 object CheckCommand "_hk_check_logstash_status" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_logstash_status.py" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_logstash_status.py" ]
 
         arguments = {
                 "-H" = {
@@ -531,7 +534,7 @@ object CheckCommand "_hk_check_logstash_status" {
 
 object CheckCommand "_hk_check_memcached_write" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_memcached_write.pl" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_memcached_write.pl" ]
 
         arguments = {
                 "-H" = {
@@ -569,7 +572,7 @@ object CheckCommand "_hk_check_memcached_write" {
 
 object CheckCommand "_hk_check_memcached_stats" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_memcached_stats.pl" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_memcached_stats.pl" ]
 
         arguments = {
                 "-H" = {
@@ -603,7 +606,7 @@ object CheckCommand "_hk_check_memcached_stats" {
 
 object CheckCommand "_hk_check_mysql_query" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_mysql_query.pl" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_mysql_query.pl" ]
 
         arguments = {
                 "-H" = {
@@ -702,7 +705,7 @@ object CheckCommand "_hk_check_mysql_query" {
 
 object CheckCommand "_hk_check_solr_api_ping" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_solr_api_ping.pl" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_solr_api_ping.pl" ]
 
         arguments = {
                 "-H" = {
@@ -764,7 +767,7 @@ object CheckCommand "_hk_check_solr_api_ping" {
 
 object CheckCommand "_hk_check_solr_write" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_solr_write.pl" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_solr_write.pl" ]
 
         arguments = {
                 "-H" = {
@@ -835,7 +838,7 @@ object CheckCommand "_hk_check_solr_write" {
 
 object CheckCommand "_hk_check_vault_health" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_vault_health.py" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_vault_health.py" ]
 
         arguments = {
                 "-H" = {
@@ -885,7 +888,7 @@ object CheckCommand "_hk_check_vault_health" {
 
 object CheckCommand "_hk_check_grafana_health" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_grafana_health.py" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_grafana_health.py" ]
 
         arguments = {
                 "-H" = {
@@ -927,7 +930,7 @@ object CheckCommand "_hk_check_grafana_health" {
 
 object CheckCommand "_hk_check_grafana_version" {
         import "ipv4-or-ipv6"
-        command = [ {{ harisekhon_plugins_cmd }} check_grafana_version.py" ]
+        command = [ {{ harisekhon_plugins_cmd }} "check_grafana_version.py" ]
 
         arguments = {
                 "-H" = {

@@ -1,4 +1,19 @@
 ---
+- name: Ensure custom conf.d directory is present
+  file:
+    path: "{{ config_root_dir }}/{{ custom_confd_dir }}"
+    state: directory
+  notify: Reload Icinga2
+  tags: ['configure-client']
+
+- name: Ensure config files are recursively included from conf.d dir
+  lineinfile:
+    path: "{{ config_root_dir }}/{{ main_config_file }}"
+    line: "include_recursive \"{{ custom_confd_dir }}\""
+    state: present
+  notify: Reload Icinga2
+  tags: ['configure-client']
+
 - name: Get Virtual Machine type
   command: virt-what
   register: virt_what

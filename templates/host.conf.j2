@@ -1,0 +1,37 @@
+{{ ansible_managed }}
+
+object Host "{{ host_name }}" {
+  import "{{ host_template | default('generic-host') }}"
+
+  display_name = "{{ object_display_name | default(host_object_name) }}"
+  address = "{{ host_address | default(host_object_name) }}"
+
+  # Host Variables
+{% set host_vars = host_vars | default({}) %}
+{% for var_group_name, var_group_content in host_vars.items() %}
+{% if var_group_content is mapping %}
+{% for var_name, variables in var_group_content.items() %}
+  vars.{{ var_group_name }}["{{ var_name }}"] = {
+{% for param_name, param_value in variables.items() %}
+{% if param_value == false or param_value == true %}
+    {{ param_name }} = {{ param_value | lower }}
+{% else %}
+    {{ param_name }} = "{{ param_value }}"
+{% endif %}
+{% endfor %}
+}
+{% endfor %}
+{% else %}
+{% if var_group_content == false or var_group_content == true %}
+  vars.{{ var_group_name }} = {{ var_group_content | lower }}
+{% else %}
+  vars.{{ var_group_name }} = "{{ var_group_content }}"
+{% endif %}
+{% endif %}
+{%- endfor %}
+  # End Host Variables
+
+  vars.notification["mail"] = {
+    groups = [ "icingaadmins" ]
+  }
+}

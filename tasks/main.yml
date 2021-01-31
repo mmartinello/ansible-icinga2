@@ -1,23 +1,23 @@
 ---
-- include_tasks: vars.yml
+- import_tasks: vars.yml
   tags: ['always']
 
-- include_tasks: install.yml
+- import_tasks: install.yml
   tags: ['install-icinga2-stack', 'install-icinga2']
 
-- include_tasks: ido-install.yml
+- import_tasks: ido-install.yml
   when: icinga2_ido_enable == true
   tags: ['install-icinga2-stack', 'install-icinga2-ido']  
 
-- include_tasks: configure.yml
+- import_tasks: configure.yml
   when: icinga2_client_configure == false
   tags: ['install-icinga2-stack']
   
-- include_tasks: node-configure.yml
+- import_tasks: node-configure.yml
   when: icinga2_master_setup == true
   tags: ['install-icinga2-stack']
 
-- include_tasks: client-configure.yml
+- import_tasks: client-configure.yml
   when: icinga2_client_configure == true
   tags: ['configure-client']
 
@@ -28,11 +28,11 @@
   when: icinga2_master_setup == true
   tags: ['install-icinga2-stack']
 
-- include_tasks: icingaweb2-install.yml
+- import_tasks: icingaweb2-install.yml
   when: icingaweb2_install == true
   tags: ['install-icingaweb2']
 
-- include_tasks: icingaweb2-configure.yml
+- import_tasks: icingaweb2-configure.yml
   when: icingaweb2_install == true
   tags: ['install-icingaweb2']
 
@@ -42,10 +42,14 @@
 #  when: icingaweb2_install == true
 #  tags: ['install-icingaweb2']
 
-- include_tasks: config.yml
+- import_tasks: config.yml
   when: icinga2_client_configure == false
   tags: ['install-icinga2-stack', 'config']
 
-- include_tasks: plugins.yml
+- import_tasks: hosts.yml
+  tags:
+    - hosts
+
+- import_tasks: plugins.yml
   when: plugins_install == true
   tags: ['plugins']

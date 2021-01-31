@@ -1,0 +1,29 @@
+---
+- name: Ensure hosts.d directory is present
+  file:
+    path: "{{ config_root_dir }}/hosts.d"
+    state: directory
+  notify: Reload Icinga2
+
+- name: Ensure config files are recursively included from hosts.d dir
+  lineinfile:
+    path: "{{ config_root_dir }}/{{ main_config_file }}"
+    regexp: '^(\/\/)?\s*include_recursive "hosts.d"'
+    line: 'include_recursive "hosts.d"'
+    state: present
+  notify: Reload Icinga2
+
+- name: Configure the client file on Icinga master server
+  template:
+    src: host.conf.j2
+    dest: "{{ icinga2_config_root_dir }}/hosts.d/{{ item.key }}.conf"
+    owner: root
+    group: root
+    mode: 0644
+  vars:
+    host_name: "{{ item.key }}"
+    object_display_name: "{{ item.display_name }}"
+    host_address: "{{ item.address }}"
+    host_vars: "{{ item.vars }}"
+  with_items: "{{ icinga2_hosts }}"
+  notify: Reload Icinga2

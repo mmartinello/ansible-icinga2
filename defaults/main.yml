@@ -96,6 +96,19 @@ icinga2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,C
 icinga2_master_setup: false
 icinga2_node_cn: "{{ ansible_fqdn }}"
 
+# Hosts configuration
+icinga2_hosts: {}
+#  host.example.com:
+#    display_name: "Example host"
+#    address: 123.123.123.123
+#    vars:
+#      http_vhosts:
+#        "Elasticsearch HTTP API":
+#              http_port: 9200
+#      elasticsearch:
+#        "Elasticsearch":
+#          elasticsearch_port: 9200
+
 
 #########################################################################
 # Icinga Web 2

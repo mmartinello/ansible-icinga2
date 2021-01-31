@@ -50,6 +50,3 @@
   tags:
     - hosts
 
-- import_tasks: plugins.yml
-  when: plugins_install == true
-  tags: ['plugins']

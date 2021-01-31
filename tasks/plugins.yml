@@ -1,8 +1,0 @@
----
-- include_tasks: plugins-Linux.yml
-  when: ansible_system == "Linux"
-  tags: ['plugins']
-
-- include_tasks: plugins-Windows.yml
-  when: ansible_os_family == "Windows"
-  tags: ['plugins']

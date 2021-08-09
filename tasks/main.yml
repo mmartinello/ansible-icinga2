@@ -1,22 +1,22 @@
 ---
-- include_tasks: vars.yml
+- import_tasks: vars.yml
   tags: ['always']
 
 - include_tasks: install.yml
   tags: ['install']
 
-- include_tasks: ido-install.yml
+- import_tasks: ido-install.yml
   when: icinga2_ido_enable == true
   tags: ['install', 'ido']  
 
-- include_tasks: configure.yml
+- import_tasks: configure.yml
   when: icinga2_client_configure == false
   tags: ['install']
   
-- include_tasks: node-configure.yml
+- import_tasks: node-configure.yml
   when: icinga2_master_setup == true
   tags: ['install']
 
-- include_tasks: config.yml
+- import_tasks: config.yml
   when: icinga2_client_configure == false
   tags: ['install', 'config']

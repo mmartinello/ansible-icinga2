@@ -96,6 +96,19 @@ icinga2_ido_db_user_privileges: 'SELECT,INSERT,UPDATE,DELETE,CREATE,ALTER,DROP,C
 icinga2_master_setup: false
 icinga2_node_cn: "{{ ansible_fqdn }}"
 
+# Hosts configuration
+icinga2_hosts: {}
+#  host.example.com:
+#    display_name: "Example host"
+#    address: 123.123.123.123
+#    vars:
+#      http_vhosts:
+#        "Elasticsearch HTTP API":
+#              http_port: 9200
+#      elasticsearch:
+#        "Elasticsearch":
+#          elasticsearch_port: 9200
+
 
 #########################################################################
 # Icinga Web 2
@@ -148,22 +161,6 @@ icingaweb2_icinga_api_host: localhost
 icingaweb2_icinga_api_port: 5665
 icingaweb2_icinga_api_username: icingaweb2
 icingaweb2_icinga_api_password: "{{ ansible_machine_id ~ '_icingaweb2_icinga_api_user' | hash('sha1') | truncate(24, True, '') }}"
-
-
-#########################################################################
-# Plugins
-
-plugins_install: true
-plugins_src_dir: 'files/icinga2-custom-plugins'
-plugins_dest_dir: '/opt/icinga-plugins'
-win_plugins_src_dir: 'files/icinga2-custom-plugins-windows'
-win_plugins_dest_dir: 'C:\Program Files\ICINGA2\custom-plugins' # Must stay into C:\Program Files\ICINGA2!
-win_plugins_dest_dir_name: 'custom-plugins' # Path without root directory
-win_plugins_conf_src_template: templates/custom-command-plugins-windows.conf.j2
-plugins_custom_dir_var_name: 'CustomPluginsDir'
-plugins_command_files: []
-harisekhon_plugins_install: false
-harisekhon_plugins_cmd: '"docker", "run", "--rm",'
 
 
 #########################################################################

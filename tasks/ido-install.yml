@@ -2,7 +2,6 @@
 - name: Install Icinga 2 IDO Module
   package: name=icinga2-ido-mysql state=present
   when: icinga2_ido_enable == true
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']
 
 - name: Create Icinga 2 IDO Database
   mysql_db:
@@ -14,7 +13,6 @@
     encoding: utf8
     state: present
   when: icinga2_ido_enable == true and icinga2_ido_db_create == true
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']
 
 - name: Create Icinga 2 IDO User
   mysql_user:
@@ -27,25 +25,21 @@
     priv: "{{ icinga2_ido_db_name }}.*:{{ icinga2_ido_db_user_privileges }}"
     state: present
   when: icinga2_ido_enable == true and icinga2_ido_db_create == true and icinga2_ido_db_user_create == true
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']
 
 - name: Drop tables from Icinga2 IDO Database
   shell: '{{ _mysql_cmd }} -Nse "SHOW TABLES;" {{ icinga2_ido_db_name }} | while read table; do {{ _mysql_cmd }} -e "DROP TABLE $table" {{ icinga2_ido_db_name }}; done'
   when: icinga2_ido_enable == true and icinga2_ido_db_create == true and (icinga2_ido_db_purge == true or icinga2_ido_db_purge|bool == true)
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']
 
 - name: Get tables in Icinga2 IDO Database
   shell: '{{ _mysql_cmd }} -Nse "SHOW TABLES;" {{ icinga2_ido_db_name }}'
   register: icinga2_ido_db_tables
   when: icinga2_ido_enable == true and icinga2_ido_db_create == true
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']
 
 - name: Check if Icinga2 IDO Database Schema file exists
   stat:
     path: "{{ icinga2_ido_db_schema_file_path}}"
   register: icinga2_ido_db_schema_file
   when: icinga2_ido_enable == true and icinga2_ido_db_create == true
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']
   
 - name: Import Icinga2 IDO Database Schema
   mysql_db:
@@ -56,16 +50,13 @@
     state: import
     target: "{{ icinga2_ido_db_schema_file_path }}"
   when: icinga2_ido_enable == true and icinga2_ido_db_create == true and icinga2_ido_db_schema_file is defined and icinga2_ido_db_schema_file.stat is defined and icinga2_ido_db_schema_file.stat.exists and icinga2_ido_db_tables.stdout_lines == []
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']
 
 - name: Generate IDO MySQL configuration file
   template:
     src: templates/ido-mysql.conf.j2
     dest: /etc/icinga2/features-available/ido-mysql.conf
   when: icinga2_ido_enable == true
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']
 
 - name: Enable IDO MySQL Module
   command: icinga2 feature enable ido-mysql
   when: icinga2_ido_enable == true
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']

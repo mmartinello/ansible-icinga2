@@ -7,7 +7,6 @@
     state: directory
   when: confd_dir_included == True
   notify: Reload Icinga2
-  tags: ['install-icinga2-stack', 'config']
 
 - name: Ensure config files are recursively included from conf.d dir
   lineinfile:
@@ -17,7 +16,6 @@
     state: present
   when: confd_dir_included == True
   notify: Reload Icinga2
-  tags: ['install-icinga2-stack', 'config']
   
 - name: Ensure config files are not recursively included from conf.d dir
   lineinfile:
@@ -27,7 +25,6 @@
     state: present
   when: confd_dir_included == False
   notify: Reload Icinga2
-  tags: ['install-icinga2-stack', 'config']
 
 - name: Ensure custom conf.d directory is present
   file:
@@ -35,7 +32,6 @@
     state: directory
 #  when: confd_dir_included == True
   notify: Reload Icinga2
-  tags: ['install-icinga2-stack', 'config']
 
 - name: Ensure config files are recursively included from custom conf.d dir
   lineinfile:
@@ -44,7 +40,6 @@
     state: present
 #  when: confd_dir_included == True
   notify: Reload Icinga2
-  tags: ['install-icinga2-stack', 'config']
   
 #- name: Ensure config files are not recursively included from conf.d dir
 #  lineinfile:
@@ -64,7 +59,6 @@
     state: directory
 #  when: confd_dir_included == True
   notify: Reload Icinga2
-  tags: ['install-icinga2-stack', 'config']
   
 - name: Ensure config files are recursively included from services dir
   lineinfile:
@@ -73,7 +67,6 @@
     state: present
 #  when: confd_dir_included == True
   notify: Reload Icinga2
-  tags: ['install-icinga2-stack', 'config']
 
 #- name: Ensure config files are not recursively included from services dir
 #  lineinfile:
@@ -90,4 +83,3 @@
     state: absent
   with_items: "{{ default_unnecessary_config_files }}"
   notify: Reload Icinga2
-  tags: ['install-icinga2-stack', 'config']

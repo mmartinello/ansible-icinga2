@@ -3,30 +3,25 @@
   stat:
     path: /etc/icinga2/features-enabled/api.conf
   register: icinga2_api_conf_file
-  tags: ['install-icinga2-stack']
 
 - name: Setup Icinga 2 API
   command: icinga2 api setup
   when: icinga2_api_conf_file.stat.exists == false
-  tags: ['install-icinga2-stack']
 
 - name: Set Ticket Salt
   lineinfile:
     dest: /etc/icinga2/constants.conf
     regexp: "const TicketSalt ="
     line: "const TicketSalt = \"{{ icinga2_api_ticket_salt }}\""
-  tags: ['install-icinga2-stack']
 
 - name: Configure Icinga2 API
   template:
     src: templates/api.conf.j2
     dest: /etc/icinga2/features-available/api.conf
   notify: Restart Icinga2
-  tags: ['install-icinga2-stack']
 
 - name: Configure Icinga2 API Users
   template:
     src: templates/api-users.conf.j2
     dest: /etc/icinga2/conf.d/api-users.conf
   notify: Restart Icinga2
-  tags: ['install-icinga2-stack']

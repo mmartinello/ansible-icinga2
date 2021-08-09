@@ -3,49 +3,20 @@
   tags: ['always']
 
 - include_tasks: install.yml
-  tags: ['install-icinga2-stack', 'install-icinga2']
+  tags: ['install']
 
 - include_tasks: ido-install.yml
   when: icinga2_ido_enable == true
-  tags: ['install-icinga2-stack', 'install-icinga2-ido']  
+  tags: ['install', 'ido']  
 
 - include_tasks: configure.yml
   when: icinga2_client_configure == false
-  tags: ['install-icinga2-stack']
+  tags: ['install']
   
 - include_tasks: node-configure.yml
   when: icinga2_master_setup == true
-  tags: ['install-icinga2-stack']
-
-- include_tasks: client-configure.yml
-  when: icinga2_client_configure == true
-  tags: ['configure-client']
-
-- name: Restart Icinga 2
-  service:
-    name: icinga2
-    state: restarted
-  when: icinga2_master_setup == true
-  tags: ['install-icinga2-stack']
-
-- include_tasks: icingaweb2-install.yml
-  when: icingaweb2_install == true
-  tags: ['install-icingaweb2']
-
-- include_tasks: icingaweb2-configure.yml
-  when: icingaweb2_install == true
-  tags: ['install-icingaweb2']
-
-#- name: Icingaweb2 installed, please complete configuration on web setup
-#  debug:
-#    msg: "{{ icingacli_setup_token.stdout_lines }}"
-#  when: icingaweb2_install == true
-#  tags: ['install-icingaweb2']
+  tags: ['install']
 
 - include_tasks: config.yml
   when: icinga2_client_configure == false
-  tags: ['install-icinga2-stack', 'config']
-
-- include_tasks: plugins.yml
-  when: plugins_install == true
-  tags: ['plugins']
+  tags: ['install', 'config']

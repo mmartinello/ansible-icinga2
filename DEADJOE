@@ -99,3 +99,49 @@ Processing '/usr/local/Cellar/joe/4.5/etc/joe/joerc'...
 Processing '/usr/local/Cellar/joe/4.5/etc/joe/ftyperc'...
 Finished processing /usr/local/Cellar/joe/4.5/etc/joe/ftyperc
 Finished processing /usr/local/Cellar/joe/4.5/etc/joe/joerc
+
+*** These modified files were found in JOE when it aborted on Wed May  6 08:35:24 2020
+*** JOE was aborted because the terminal closed
+
+*** File '(Unnamed)'
+netbookingsrl.it
+netbookingsrl.it
+CheckCommand "_
+CheckCommand "_
+check_command = "_
+ies.it
+test.test.dc.
+: 
+shop.miodominio.it;
+
+*** File '(Unnamed)'
+log
+windows
+flexisp
+sqlpr
+pbx
+gu
+gus
+shop.amo.bz.it
+amo
+custom-command-plugins
+services_config_files
+
+*** File '(Unnamed)'
+/Users/mattia/.ssh/known_hosts
+/Users/mattia/.ssh/known_hosts
+/Users/mattia/.ssh/known_hosts
+config/config.inc.php
+plays/icinga2-client.yml
+tasks/plugins-Linux.yml~
+host_vars/cop.dc.chino.io.yml
+defaults/main.yml
+mmartinello.icinga2-client/tasks/main.yml
+defaults/main.yml
+defaults/main.yml
+
+*** File '* Startup Log *'
+Processing '/usr/local/Cellar/joe/4.6/etc/joe/joerc'...
+Processing '/usr/local/Cellar/joe/4.6/etc/joe/ftyperc'...
+Finished processing /usr/local/Cellar/joe/4.6/etc/joe/ftyperc
+Finished processing /usr/local/Cellar/joe/4.6/etc/joe/joerc
